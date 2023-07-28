@@ -22,7 +22,14 @@
                 </span>
             </el-tooltip>
         </div>
-        <el-dropdown class="user-container" @command="handleCommand">
+        <div class="user-container">
+            <div class="user-wrapper">
+                <el-avatar size="medium">
+                    <i class="el-icon-user-solid" />
+                </el-avatar>
+            </div>
+        </div>
+        <!-- <el-dropdown class="user-container" @command="handleCommand">
             <div class="user-wrapper">
                 <el-avatar size="medium">
                     <i class="el-icon-user-solid" />
@@ -35,7 +42,7 @@
                 <el-dropdown-item command="setting">个人设置</el-dropdown-item>
                 <el-dropdown-item divided command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
     </div>
 </template>
 

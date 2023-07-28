@@ -29,7 +29,7 @@ module.exports = {
             'before': false,
             'after': true
         }],
-        'comma-dangle': [2, 'never'],
+        'comma-dangle': 'off',
         'comma-style': [2, 'last'],
         'computed-property-spacing': [2, 'never'],
         'indent': [2, 4, {

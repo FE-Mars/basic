@@ -11,14 +11,6 @@ import EmptyLayout from '@/layout/empty'
 
 const constantRoutes = [
     {
-        path: '/login',
-        name: 'login',
-        component: () => import('@/views/login'),
-        meta: {
-            title: '登录'
-        }
-    },
-    {
         path: '/',
         component: Layout,
         redirect: '/dashboard',

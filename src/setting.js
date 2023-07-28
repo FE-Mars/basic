@@ -12,17 +12,17 @@ let globalSettings = {
     // 是否始终显示主侧边栏，设置为 false 且主侧边栏里只有一个导航时，主侧边栏会自动隐藏
     alwaysShowMainSidebar: false,
     // 是否开启侧边栏展开收起按钮
-    enableSidebarCollapse: false,
+    enableSidebarCollapse: true,
     // 侧边栏是否收起
     sidebarCollapse: false,
     // 是否显示底部版权信息，同时在路由 meta 对象里可以单独设置某个路由是否显示底部版权信息
-    showCopyright: true,
+    showCopyright: false,
     // 版权信息配置，格式为：Copyright © [dates] <company>
     copyrightDates: '2021',
     copyrightCompany: 'Fantastic-admin',
     copyrightWebsite: 'https://hooray.github.io/fantastic-admin',
     // 是否开启导航搜索
-    enableNavSearch: true,
+    enableNavSearch: false,
     // 是否开启全屏
     enableFullscreen: false,
     // 是否开启页面刷新
@@ -36,7 +36,7 @@ let globalSettings = {
     // 是否开启扁平化路由，开启后三级以及三级以上的嵌套路由均为被处理成二级，但侧边栏导航的层级效果不变
     enableFlatRoutes: false,
     // 控制台名称
-    dashboardTitle: '控制台',
+    dashboardTitle: '首页',
     // 是否开启主题配置（建议在生产环境关闭）
     enableThemeSetting: true
 }

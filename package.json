@@ -11,7 +11,6 @@
         "svgo": "svgo -f src/assets/icons"
     },
     "dependencies": {
-        "@tinymce/tinymce-vue": "^3.2.6",
         "axios": "^0.21.0",
         "core-js": "^3.6.4",
         "dayjs": "^1.9.4",
@@ -20,7 +19,6 @@
         "nprogress": "^0.2.0",
         "path-to-regexp": "^6.2.0",
         "screenfull": "^5.0.2",
-        "tinymce": "^5.5.1",
         "vue": "^2.6.12",
         "vue-cookies": "^1.7.4",
         "vue-meta": "^2.4.0",
