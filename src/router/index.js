@@ -7,7 +7,7 @@ import 'nprogress/nprogress.css' // progress bar style
 Vue.use(VueRouter)
 
 import Layout from '@/layout'
-import EmptyLayout from '@/layout/empty'
+// import EmptyLayout from '@/layout/empty'
 
 const constantRoutes = [
     {
@@ -22,45 +22,13 @@ const constantRoutes = [
                 meta: {
                     title: store.state.settings.dashboardTitle
                 }
-            },
-            {
-                path: 'personal',
-                component: EmptyLayout,
-                redirect: '/personal/setting',
-                meta: {
-                    title: '个人中心',
-                    breadcrumb: false
-                },
-                children: [
-                    {
-                        path: 'setting',
-                        name: 'personalSetting',
-                        component: () => import('@/views/personal/setting'),
-                        meta: {
-                            title: '个人设置'
-                        }
-                    },
-                    {
-                        path: 'edit/password',
-                        name: 'personalEditPassword',
-                        component: () => import('@/views/personal/edit.password'),
-                        meta: {
-                            title: '修改密码'
-                        }
-                    }
-                ]
-            },
-            {
-                path: 'reload',
-                name: 'reload',
-                component: () => import('@/views/reload')
             }
         ]
     }
 ]
 
-import MultilevelMenuExample from './modules/multilevel.menu.example'
-import BreadcrumbExample from './modules/breadcrumb.example'
+// import MultilevelMenuExample from './modules/multilevel.menu.example'
+// import BreadcrumbExample from './modules/breadcrumb.example'
 
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
@@ -70,8 +38,72 @@ let asyncRoutes = [
             icon: 'sidebar-default'
         },
         children: [
-            MultilevelMenuExample,
-            BreadcrumbExample
+            {
+                path: '/task_monitoring',
+                component: Layout,
+                redirect: '/task_monitoring/index',
+                name: 'taskMonitoring',
+                meta: {
+                    title: '任务监督',
+                    icon: 'fenfa'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'taskMonitoringIndex',
+                        component: () => import(/* webpackChunkName: 'monitoring' */ '@/views/monitoring'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/task_monitoring'
+                        }
+                    }
+                ]
+            },
+            {
+                path: '/task_distribution',
+                component: Layout,
+                redirect: '/task_distribution/index',
+                name: 'taskDistribution',
+                meta: {
+                    title: '分发任务管理',
+                    icon: 'renwujianguan'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'taskDistributionIndex',
+                        component: () => import(/* webpackChunkName: 'breadcrumb_example' */ '@/views/breadcrumb_example/list1'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/task_distribution'
+                        }
+                    }
+                ]
+            },
+            {
+                path: '/task_distribution_list',
+                component: Layout,
+                redirect: '/task_distribution_list/index',
+                name: 'taskDistributionList',
+                meta: {
+                    title: '分发清单管理',
+                    icon: 'renwuqingdan'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'taskDistributionListIndex',
+                        component: () => import(/* webpackChunkName: 'breadcrumb_example' */ '@/views/breadcrumb_example/list1'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/task_distribution_list'
+                        }
+                    }
+                ]
+            }
         ]
     }
 ]

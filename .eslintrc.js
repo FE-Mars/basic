@@ -21,6 +21,7 @@ module.exports = {
     },
     rules: {
         // 代码风格
+        "prettier/prettier": 'off',
         'block-spacing': [2, 'always'],
         'brace-style': [2, '1tbs', {
             'allowSingleLine': true
@@ -29,7 +30,7 @@ module.exports = {
             'before': false,
             'after': true
         }],
-        'comma-dangle': 'off',
+        'comma-dangle': ['ignore'],
         'comma-style': [2, 'last'],
         'computed-property-spacing': [2, 'never'],
         'indent': [2, 4, {
@@ -51,7 +52,7 @@ module.exports = {
         'no-unneeded-ternary': [2, {
             'defaultAssignment': false
         }],
-        'quotes': [2, 'single'],
+        'quotes': 'off',
         'semi': [2, 'never'],
         'space-before-blocks': [2, 'always'],
         'space-before-function-paren': [2, 'never'],
@@ -84,6 +85,7 @@ module.exports = {
         'vue/this-in-template': 2,
         'vue/script-indent': [2, 4, {
             'switchCase': 1
-        }]
+        }],
+        'comma-dangle': ['ignore'],
     }
 };
