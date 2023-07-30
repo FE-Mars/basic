@@ -41,8 +41,19 @@ $g-sub-sidebar-menu-active-color: #e7f4ff;
 // 次侧边栏菜单选中背景色
 $g-sub-sidebar-menu-active-bg: #5482ee;
 
+// element ui 颜色
+$color-primary: #409eff;
+$color-success: #67c23a;
+$color-warning: #e6a23c;
+$color-danger: #f56c6c;
+$color-info: #909399;
+
 // 输出给js使用
 :export {
+    color_primary: $color-primary;
+    color_success: $color-success;
+    color_warning: $color-warning;
+    color_danger: $color-danger;
     g_main_sidebar_width: $g-main-sidebar-width;
     g_sub_sidebar_width: $g-sub-sidebar-width;
     g_sidebar_width: $g-main-sidebar-width + $g-sub-sidebar-width;

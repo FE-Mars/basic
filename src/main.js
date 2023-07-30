@@ -20,7 +20,8 @@ Vue.use(VueMeta)
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
+import '@icon-park/vue/styles/index.css'
+Vue.use(ElementUI, { size: 'small' })
 
 import hotkeys from 'hotkeys-js'
 Vue.prototype.$hotkeys = hotkeys
@@ -34,6 +35,7 @@ const requireAll = requireContext => requireContext.keys().map(requireContext)
 requireAll(req)
 
 import './assets/styles/reset.scss'
+import './assets/styles/style.scss'
 
 import './mock'
 

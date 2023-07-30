@@ -130,7 +130,8 @@ export default {
                     font-weight: normal;
                 }
                 &:last-child span {
-                    color: #97a8be;
+                    // color: #97a8be;
+                    color: $color-primary;
                 }
             }
         }

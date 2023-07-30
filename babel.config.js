@@ -6,5 +6,15 @@ module.exports = {
         development: {
             plugins: ['dynamic-import-node']
         }
-    }
+    },
+    plugins: [
+        [
+            "import",
+            {
+                libraryName: '@icon-park/vue',
+                libraryDirectory: 'es/icons',
+                camel2DashComponentName: false // default: true,
+            }
+        ]
+    ]
 }

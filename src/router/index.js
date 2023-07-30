@@ -73,7 +73,7 @@ let asyncRoutes = [
                     {
                         path: 'index',
                         name: 'taskDistributionIndex',
-                        component: () => import(/* webpackChunkName: 'breadcrumb_example' */ '@/views/breadcrumb_example/list1'),
+                        component: () => import(/* webpackChunkName: 'distribution' */ '@/views/distribution'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
@@ -95,7 +95,7 @@ let asyncRoutes = [
                     {
                         path: 'index',
                         name: 'taskDistributionListIndex',
-                        component: () => import(/* webpackChunkName: 'breadcrumb_example' */ '@/views/breadcrumb_example/list1'),
+                        component: () => import(/* webpackChunkName: 'distribution_list' */ '@/views/distribution_list'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,

@@ -30,8 +30,9 @@ module.exports = {
             'before': false,
             'after': true
         }],
-        'comma-dangle': ['ignore'],
+        'comma-dangle': [0],
         'comma-style': [2, 'last'],
+        'semi': [0],
         'computed-property-spacing': [2, 'never'],
         'indent': [2, 4, {
             'SwitchCase': 1
@@ -85,7 +86,6 @@ module.exports = {
         'vue/this-in-template': 2,
         'vue/script-indent': [2, 4, {
             'switchCase': 1
-        }],
-        'comma-dangle': ['ignore'],
+        }]
     }
 };

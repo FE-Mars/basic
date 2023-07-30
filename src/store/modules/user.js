@@ -9,7 +9,7 @@ const state = {
 
 const getters = {
     isLogin: state => {
-        let retn = false
+        let retn = true
         if (state.token) {
             let unix = Date.parse(new Date())
             if (unix < state.failure_time * 1000) {

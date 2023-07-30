@@ -1,0 +1,49 @@
+@import url('./resources/variables.scss');
+.is-success {
+    color: $color-success;
+}
+.is-fail {
+    color: $color-danger;
+}
+.is-warning,
+.is-timeout {
+    color: $color-warning;
+}
+.is-running {
+    color: #5482ee;
+}
+.my-title {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    margin: 0;
+    &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 16px;
+        border-radius: 1px;
+        margin-right: 6px;
+        background-color: $color-primary;
+    }
+}
+.list-wrap {
+    .list-header {
+        display: flex;
+        align-items: center;
+        padding-bottom: 20px;
+    }
+    .el-pagination {
+        padding: 0;
+        margin-left: -5px;
+        margin-top: 20px;
+        .el-pagination__jump {
+            margin-left: 0;
+        }
+    }
+}
+.el-form--inline {
+    .el-form-item {
+        margin-bottom: 0;
+    }
+}
