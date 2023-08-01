@@ -38,7 +38,7 @@ let globalSettings = {
     // 控制台名称
     dashboardTitle: '首页',
     // 是否开启主题配置（建议在生产环境关闭）
-    enableThemeSetting: true
+    enableThemeSetting: false
 }
 
 export default globalSettings

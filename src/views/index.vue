@@ -36,7 +36,7 @@
                 <el-col :span="12">
                     <el-card shadow="hover">
                         <div slot="header">
-                            <span>月度分发数据监控</span>
+                            <span>月度分发数据趋势</span>
                         </div>
                         <div ref="chart_container" class="chart-container" />
                     </el-card>
@@ -95,9 +95,12 @@ export default {
     mounted() {
         this.fetchAbnormalList()
         this.initChart()
+        window.addEventListener('resize', this.resizeChart)
     },
     beforeDestroy() {
         this.timer && clearTimeout(this.timer)
+        window.removeEventListener('resize', this.resizeChart)
+        this.my_chart?.dispose()
     },
     methods: {
         initChart() {
@@ -145,6 +148,7 @@ export default {
                     }
                 ]
             })
+            this.my_chart = my_chart
         },
         fetchAbnormalList() {
             return api.get("/mock/dashboard/abnormal_list", {
@@ -170,6 +174,11 @@ export default {
             this.timer = setTimeout(() => {
                 this.scrollAbnormalList()
             }, 3000)
+        },
+        resizeChart() {
+            if (this.my_chart) {
+                this.my_chart.resize()
+            }
         }
     },
 }
