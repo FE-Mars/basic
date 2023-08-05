@@ -111,7 +111,7 @@ export default {
     },
     methods: {
         fetchTargetFileList(id) {
-            api.get("/mock/monitoring/getTargetFileList", {
+            api.get("/monitoring/getTargetFileList", {
                 params: {
                     id,
                     pageIndex: this.pageIndex,

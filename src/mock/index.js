@@ -26,15 +26,18 @@ function XHR2ExpressReqWrap(respond) {
         return Mock.mock(result)
     }
 }
-const mocksContext = require.context('./modules/', true, /.js$/)
-mocksContext.keys().forEach(file_name => {
-    // 获取文件中的 default 模块
-    const mocks = mocksContext(file_name)
-    for (const mock of mocks) {
-        Mock.mock(
-            new RegExp(`${process.env.VUE_APP_API_ROOT}/${mock.url}`),
-            mock.type || 'get',
-            XHR2ExpressReqWrap(mock.result)
-        )
-    }
-})
+
+if (process.env.VUE_APP_API_MOCK == 'ON') {
+    const mocksContext = require.context('./modules/', true, /.js$/)
+    mocksContext.keys().forEach(file_name => {
+        // 获取文件中的 default 模块
+        const mocks = mocksContext(file_name)
+        for (const mock of mocks) {
+            Mock.mock(
+                new RegExp(`${process.env.VUE_APP_API_ROOT}${process.env.VUE_APP_API_MOCK_PREFIX}/${mock.url}`),
+                mock.type || 'get',
+                XHR2ExpressReqWrap(mock.result)
+            )
+        }
+    })
+}
