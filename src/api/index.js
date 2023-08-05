@@ -13,8 +13,13 @@ const toLogin = () => {
     })
 }
 
+let baseURL = process.env.VUE_APP_API_ROOT
+if (process.env.VUE_APP_API_MOCK == 'ON') {
+    baseURL += process.env.VUE_APP_API_MOCK_PREFIX
+}
+
 const api = axios.create({
-    baseURL: process.env.VUE_APP_API_ROOT,
+    baseURL: baseURL,
     timeout: 10000,
     responseType: 'json'
     // withCredentials: true

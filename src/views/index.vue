@@ -151,7 +151,7 @@ export default {
             this.my_chart = my_chart
         },
         fetchAbnormalList() {
-            return api.get("/mock/dashboard/abnormal_list", {
+            return api.get("/dashboard/abnormal_list", {
                 params: {}
             }).then(({ data }) => {
                 console.log(data)

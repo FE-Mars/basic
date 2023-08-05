@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-07-30 17:18:16
+ * @LastEditTime: 2023-08-05 16:26:08
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -151,7 +151,7 @@ export default {
         },
         fetchData() {
             this.expanded_rows = {}  // 清空已展开的行
-            return api.get("/mock/monitoring/list", {
+            return api.get("/monitoring/list", {
                 params: {
                     ...this.filters,
                     pageIndex: this.pageIndex,
