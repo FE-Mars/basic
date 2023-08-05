@@ -39,67 +39,98 @@ let asyncRoutes = [
         },
         children: [
             {
-                path: '/task_monitoring',
+                path: '/supervision',
                 component: Layout,
-                redirect: '/task_monitoring/index',
-                name: 'taskMonitoring',
+                redirect: '/supervision/in',
+                name: 'Supervision',
                 meta: {
-                    title: '任务监督',
+                    title: '任务监管',
                     icon: 'fenfa'
                 },
                 children: [
                     {
-                        path: 'index',
-                        name: 'taskMonitoringIndex',
-                        component: () => import(/* webpackChunkName: 'monitoring' */ '@/views/monitoring'),
+                        path: 'in',
+                        name: 'SupervisionIn',
+                        component: () => import(/* webpackChunkName: 'supervision_in' */ '@/views/supervision/in'),
                         meta: {
-                            sidebar: false,
-                            breadcrumb: false,
-                            activeMenu: '/task_monitoring'
+                            title: '入库监管'
+                        }
+                    },
+                    {
+                        path: 'out',
+                        name: 'SupervisionOut',
+                        component: () => import(/* webpackChunkName: 'supervision_out' */ '@/views//supervision/out'),
+                        meta: {
+                            title: '出库监管'
                         }
                     }
                 ]
             },
             {
-                path: '/task_distribution',
+                path: '/product_management',
                 component: Layout,
-                redirect: '/task_distribution/index',
-                name: 'taskDistribution',
+                redirect: '/product_management/index',
+                name: 'productManagement',
                 meta: {
-                    title: '分发任务管理',
-                    icon: 'renwujianguan'
+                    title: '产品管理',
+                    icon: 'product',
+                    active_icon: 'product-active'
                 },
                 children: [
                     {
                         path: 'index',
-                        name: 'taskDistributionIndex',
-                        component: () => import(/* webpackChunkName: 'distribution' */ '@/views/distribution'),
+                        name: 'productManagementIndex',
+                        component: () => import(/* webpackChunkName: 'product_management' */ '@/views/product_management'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution'
+                            activeMenu: '/product_management'
                         }
                     }
                 ]
             },
             {
-                path: '/task_distribution_list',
+                path: '/inbound_task_management',
                 component: Layout,
-                redirect: '/task_distribution_list/index',
-                name: 'taskDistributionList',
+                redirect: '/inbound_task_management/index',
+                name: 'inboundTaskManagement',
                 meta: {
-                    title: '分发清单管理',
-                    icon: 'renwuqingdan'
+                    title: '入库任务管理',
+                    icon: 'warehousing',
+                    active_icon: 'warehousing-active'
                 },
                 children: [
                     {
                         path: 'index',
-                        name: 'taskDistributionListIndex',
-                        component: () => import(/* webpackChunkName: 'distribution_list' */ '@/views/distribution_list'),
+                        name: 'inboundTaskManagementIndex',
+                        component: () => import(/* webpackChunkName: 'inbound_task_management' */ '@/views/inbound_task_management'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution_list'
+                            activeMenu: '/inbound_task_management'
+                        }
+                    }
+                ]
+            },
+            {
+                path: '/outbound_list_management',
+                component: Layout,
+                redirect: '/outbound_list_management/index',
+                name: 'outboundListManagement',
+                meta: {
+                    title: '出库清单管理',
+                    icon: 'outbound',
+                    active_icon: 'outbound-active'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'outboundListManagementIndex',
+                        component: () => import(/* webpackChunkName: 'outbound_list_management' */ '@/views/outbound_list_management'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/outbound_list_management'
                         }
                     }
                 ]

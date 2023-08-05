@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width,initial-scale=1.0" />
         <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
-        <meta name="keywords" content="分发管理系统" />
-        <meta name="description" content="分发管理系统" />
+        <meta name="keywords" content="<%= htmlWebpackPlugin.options.title %>" />
+        <meta name="description" content="<%= htmlWebpackPlugin.options.title %>" />
         <title><%= htmlWebpackPlugin.options.title %></title>
         <% for (var i in htmlWebpackPlugin.options.cdn &&
         htmlWebpackPlugin.options.cdn.css) { %>
@@ -47,7 +47,7 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                
+
                 width: 100px;
                 height: 100px;
             }

@@ -1,6 +1,6 @@
 <template>
     <div class="page-home">
-        <page-header title="分发数据监控" />
+        <page-header title="出入库数据监控" />
         <page-main>
             <el-row :gutter="20">
                 <el-col v-for="card in data_cards" :key="card.prop" :span="6">
@@ -36,7 +36,7 @@
                 <el-col :span="12">
                     <el-card shadow="hover">
                         <div slot="header">
-                            <span>月度分发数据趋势</span>
+                            <span>近七日入库统计</span>
                         </div>
                         <div ref="chart_container" class="chart-container" />
                     </el-card>
@@ -61,6 +61,7 @@
 
 <script>
 import * as echarts from 'echarts'
+import dayjs from 'dayjs'
 import { Dashboard, Success, WorriedFace, Change, ArrowUp, ArrowDown } from '@icon-park/vue'
 import api from '@/api'
 import CssVariables from '@/assets/styles/resources/variables.scss'
@@ -82,10 +83,10 @@ export default {
                 total_volume_rate: 0,
             },
             data_cards: [  // 数据卡片
-                { prop: 'total', label: '今日分发总数', unit: '个/天', icon: 'Dashboard', icon_color: CssVariables.color_primary },
-                { prop: 'success', label: '成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
-                { prop: 'fail', label: '失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
-                { prop: 'total_volume', label: '今日分发总体量', unit: 'GB/天', icon: 'Change', icon_color: CssVariables.color_primary },
+                { prop: 'total', label: '入库成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
+                { prop: 'success', label: '入库失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
+                { prop: 'fail', label: '出库成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
+                { prop: 'total_volume', label: '出库失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
             ],
             abnormal_list: [],  // 异常事件列表
             show_abnormal_list: [],  // 显示的异常事件列表
@@ -104,8 +105,11 @@ export default {
     },
     methods: {
         initChart() {
-            const my_chart = echarts.init(this.$refs.chart_container)
-            // 初始化2条折线
+            const my_chart = echarts.init(this.$refs.chart_container), category = []
+            for (let i = 6; i >= 0; i--) {
+                category.push(dayjs().subtract(i, 'day').format('MM-DD'))
+            }
+            // 初始化
             my_chart.setOption({
                 tooltip: {
                     trigger: 'axis'
@@ -113,34 +117,34 @@ export default {
                 legend: {
                     top: '6px',
                     right: '4%',
-                    data: ['成功数', '失败数']
+                    data: ['成功', '失败']
                 },
                 grid: {
-                    left: '3%',
+                    left: '2%',
                     right: '4%',
                     bottom: '3%',
                     containLabel: true
                 },
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
-                    data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+                    // boundaryGap: false,
+                    data: category
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
                     {
-                        name: '成功数',
-                        type: 'line',
+                        name: '成功',
+                        type: 'bar',
                         data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191, 234, 290],
                         itemStyle: {
                             color: CssVariables.color_success
                         }
                     },
                     {
-                        name: '失败数',
-                        type: 'line',
+                        name: '失败',
+                        type: 'bar',
                         data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101, 134, 90],
                         itemStyle: {
                             color: CssVariables.color_danger

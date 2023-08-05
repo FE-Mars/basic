@@ -32,7 +32,7 @@ mocksContext.keys().forEach(file_name => {
     const mocks = mocksContext(file_name)
     for (const mock of mocks) {
         Mock.mock(
-            new RegExp(`${process.env.VUE_APP_API_ROOT}mock/${mock.url}`),
+            new RegExp(`${process.env.VUE_APP_API_ROOT}/${mock.url}`),
             mock.type || 'get',
             XHR2ExpressReqWrap(mock.result)
         )
