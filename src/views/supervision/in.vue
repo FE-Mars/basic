@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-05 16:14:43
+ * @LastEditTime: 2023-08-05 16:35:51
  * @LastEditors: Wang Jun
  * @Description: 入库监管
 -->
@@ -56,6 +56,10 @@ const STATUS = [
 ]
 export default {
     name: "SupervisionIn",
+    beforeRouteLeave(to, from, next) {
+        this.$store.commit('keepAlive/add', 'SupervisionIn')
+        next()
+    },
     data() {
         return {
             filters: this.getDefaultFilters(),
