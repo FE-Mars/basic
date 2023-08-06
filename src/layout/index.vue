@@ -233,6 +233,7 @@ header {
     display: flex;
     align-items: center;
     padding: 0 20px;
+    padding-left: 0;
     height: $g-header-height;
     background-color: $g-header-bg;
     color: $g-header-menu-color;
@@ -259,11 +260,11 @@ header {
         padding: inherit;
         background-color: inherit;
         .logo {
-            width: 50px;
-            height: 50px;
+            width: $g-sub-sidebar-width;
+            height: 70px;
         }
         span {
-            font-size: 24px;
+            font-size: 22px;
             letter-spacing: 1px;
         }
     }

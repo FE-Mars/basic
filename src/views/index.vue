@@ -36,7 +36,7 @@
                 <el-col :span="12">
                     <el-card shadow="hover">
                         <div slot="header">
-                            <span>月度分发数据趋势</span>
+                            <h3 class="my-title">近{{ day_count }}天分发统计</h3>
                         </div>
                         <div ref="chart_container" class="chart-container" />
                     </el-card>
@@ -44,12 +44,21 @@
                 <el-col :span="12">
                     <el-card shadow="hover">
                         <div slot="header">
-                            <span>异常事件</span>
+                            <h3 class="my-title">异常事件</h3>
                         </div>
-                        <el-table v-if="show_abnormal_list.length" :data="show_abnormal_list" height="400px">
-                            <el-table-column prop="name" label="文件名称" show-overflow-tooltip />
-                            <el-table-column prop="fail_type" label="异常类型" show-overflow-tooltip width="150px" />
-                            <el-table-column prop="date_time" label="时间" width="150px" />
+                        <el-table v-if="show_abnormal_list.length" :data="show_abnormal_list" height="410px">
+                            <el-table-column prop="fileName" label="文件名称" show-overflow-tooltip />
+                            <el-table-column prop="type" label="异常类型" show-overflow-tooltip width="150px">
+                                <template slot-scope="scope">
+                                    <el-tooltip effect="light">
+                                        <div slot="content" style="max-width: 400px;" v-html="scope.row.description" />
+                                        <el-tag type="danger">
+                                            {{ scope.row.type }}
+                                        </el-tag>
+                                    </el-tooltip>
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="createdTime" label="时间" width="150px" />
                         </el-table>
                         <el-empty v-else description="暂无异常事件" style="height: 400px;" />
                     </el-card>
@@ -71,28 +80,27 @@ export default {
     data() {
         return {
             CssVariables,
-            today: {   // 今日数据
-                total: 1120,
-                total_rate: 12,
-                success: 1089,
-                success_rate: -8,
-                fail: 91,
-                fail_rate: 4,
-                total_volume: 120,
-                total_volume_rate: 0,
-            },
-            data_cards: [  // 数据卡片
-                { prop: 'total', label: '今日分发总数', unit: '个/天', icon: 'Dashboard', icon_color: CssVariables.color_primary },
-                { prop: 'success', label: '成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
-                { prop: 'fail', label: '失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
-                { prop: 'total_volume', label: '今日分发总体量', unit: 'GB/天', icon: 'Change', icon_color: CssVariables.color_primary },
-            ],
+            day_count: 7,  // 显示几天的数据
+            error_event_limit: 100,  // 异常事件最多显示多少条
+            today: {total: 0, succeedCount: 0, failedCount: 0, fileSize: 0, unit: 'KB'},  // 今日数据
             abnormal_list: [],  // 异常事件列表
             show_abnormal_list: [],  // 显示的异常事件列表
             current_scroll_index: 9,  // 当前滚动到的异常事件索引
         }
     },
+    computed: {
+        data_cards() {
+            return [  // 数据卡片
+                { prop: 'total', label: '今日分发总数', unit: '个/天', icon: 'Dashboard', icon_color: CssVariables.color_primary },
+                { prop: 'succeedCount', label: '成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
+                { prop: 'failedCount', label: '失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
+                { prop: 'fileSize', label: '今日分发总体量', unit: `${this.today.unit}/天`, icon: 'Change', icon_color: CssVariables.color_primary },
+            ]
+        }
+    },
     mounted() {
+        this.fetchStatisticsToday()
+        this.fetchStatisticsRecentForDays()
         this.fetchAbnormalList()
         this.initChart()
         window.addEventListener('resize', this.resizeChart)
@@ -123,25 +131,27 @@ export default {
                 },
                 xAxis: {
                     type: 'category',
-                    boundaryGap: false,
-                    data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+                    // boundaryGap: false,
+                    data: []
                 },
                 yAxis: {
                     type: 'value'
                 },
                 series: [
                     {
+                        id: 'success',
                         name: '成功数',
                         type: 'line',
-                        data: [220, 182, 191, 234, 290, 330, 310, 220, 182, 191, 234, 290],
+                        data: [],
                         itemStyle: {
                             color: CssVariables.color_success
                         }
                     },
                     {
+                        id: 'failed',
                         name: '失败数',
                         type: 'line',
-                        data: [120, 132, 101, 134, 90, 230, 210, 120, 132, 101, 134, 90],
+                        data: [],
                         itemStyle: {
                             color: CssVariables.color_danger
                         }
@@ -150,13 +160,60 @@ export default {
             })
             this.my_chart = my_chart
         },
+        fetchStatisticsToday() {
+            return api.get("/statistics/today").then(({res}) => {
+                console.log(res)
+                res.total = res.failedCount + res.succeedCount
+                for (const key in res) {
+                    if (Object.hasOwnProperty.call(res, key)) {
+                        res[key + '_rate'] = (Math.random() * 100).toFixed(2)
+                    }
+                }
+                this.today = res
+                console.log(this.today)
+            })
+        },
+        fetchStatisticsRecentForDays() {   // 查询最近几天的数据
+            return api.get(`statistics/recent/${this.day_count}`).then(({res}) => {
+                const category = [], success = [], failed = []
+                res.forEach(item => {
+                    category.push(item.date)
+                    success.push(item.succeedCount)
+                    failed.push(item.failedCount)
+                })
+                this.my_chart.setOption({
+                    xAxis: {
+                        data: category
+                    },
+                    series: [
+                        {
+                            id: 'success',
+                            data: success
+                        },
+                        {
+                            id: 'failed',
+                            data: failed
+                        }
+                    ]
+                })
+            })
+        },
         fetchAbnormalList() {
-            return api.get("/dashboard/abnormal_list", {
-                params: {}
-            }).then(({ data }) => {
-                console.log(data)
-                this.abnormal_list = data.list
+            this.fetchAbnormalListTimer && clearTimeout(this.fetchAbnormalListTimer)  // 清除定时器
+            return api.post("/errorEvent/searchByCondition", {
+                limit: this.error_event_limit
+            }).then(({ res }) => {
+                console.log(res)
+                this.abnormal_list = res.data.map(item => {
+                    item.description = item.description.split('\n').map(line => {
+                        return `<p style="margin: 4px 0;">${line}</p>`
+                    }).join('')
+                    console.log(item.description)
+                    return item
+                })
+                this.current_scroll_index = 9
                 this.show_abnormal_list = this.abnormal_list.slice(0, Math.min(9, this.abnormal_list.length))
+                this.fetchAbnormalListTimer = setTimeout(this.fetchAbnormalList, 1000 * 3 * this.error_event_limit)  // 等所有数据轮询完了 再重新请求
                 this.$nextTick(() => {
                     this.scrollAbnormalList()
                 })
@@ -255,7 +312,7 @@ export default {
         }
     }
     .chart-container {
-        height: 400px;
+        height: 410px;
     }
 }
 </style>

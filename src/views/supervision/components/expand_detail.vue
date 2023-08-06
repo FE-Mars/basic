@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-07-30 16:06:04
+ * @LastEditTime: 2023-08-06 15:11:03
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
@@ -11,15 +11,17 @@
             <h3 class="my-title">分发用户</h3>
             <div class="target-list">
                 <div
-                    v-for="target in data.targets"
-                    :key="target.id"
-                    :class="{ 'target-item': true, 'is-active': target.id === active_item }"
-                    @click="onClick(target.id)"
+                    v-for="user in users"
+                    :key="user.distUserId"
+                    :class="{ 'target-item': true, 'is-active': user.distUserId === active_item }"
+                    @click="onClick(user.distUserId)"
                 >
-                    <Caution v-if="target.status == 'abnormal'" theme="filled" size="14" :fill="CssVariables.color_danger" />
-                    <span class="text">{{ target.name }}</span>
-                    <el-tooltip :open-delay="300" content="下载分发文件" placement="top">
-                        <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
+                    <Caution class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
+                    <span class="text">{{ user.distUserName }}</span>
+                    <el-tooltip :open-delay="300" content="下载清单" placement="top">
+                        <a :href="`${VUE_APP_API_ROOT}/distList/download/${user.distUserId}`" :download="user.distUserName + '.json'" target="_blank" rel="下载清单" @click.stop>
+                            <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
+                        </a>
                     </el-tooltip>
                 </div>
             </div>
@@ -27,13 +29,18 @@
         <div class="file-list-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
             <h3 class="my-title">分发明细</h3>
             <el-table :data="file_list" height="320px" highlight-current-row @current-change="onSelectedFile">
-                <el-table-column prop="name" label="文件名称">
+                <el-table-column prop="distFileName">
+                    <template slot="header">
+                        <span class="padding-left">文件名称</span>
+                    </template>
                     <template slot-scope="props">
-                        <Caution v-if="props.row.status == 'abnormal'" theme="filled" size="14" :fill="CssVariables.color_danger" />
-                        <span>{{ props.row.name }}</span>
+                        <div class="padding-left">
+                            <Caution v-if="isErrorStatus(props.row.status)" class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
+                            <span>{{ props.row.distFileName }}</span>
+                        </div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="date_time" label="时间" width="150px" />
+                <el-table-column prop="dataStartTime" label="时间" width="150px" />
             </el-table>
             <el-pagination
                 background
@@ -52,14 +59,16 @@
                         <menu-unfold theme="filled" size="16" @click="is_fold = true" />
                     </el-tooltip>
                 </h3>
-                <el-descriptions v-if="abnormal" :column="1" direction="vertical">
-                    <el-descriptions-item label="异常事件类型">
-                        <el-tag type="danger">{{ abnormal.fail_type }}</el-tag>
-                    </el-descriptions-item>
-                    <el-descriptions-item label="异常详细信息">
-                        {{ abnormal.fail_info }}
-                    </el-descriptions-item>
-                </el-descriptions>
+                <div v-if="error_events.length" class="error-event-scroll-wrap">
+                    <el-descriptions v-for="error in error_events" :key="error.id" :column="1" direction="vertical">
+                        <el-descriptions-item label="异常事件类型">
+                            <el-tag type="danger">{{ error.type }}</el-tag>
+                        </el-descriptions-item>
+                        <el-descriptions-item label="异常详细信息">
+                            {{ error.description }}
+                        </el-descriptions-item>
+                    </el-descriptions>
+                </div>
                 <el-empty v-else description="无异常" />
             </div>
         </transition>
@@ -78,6 +87,7 @@ export default {
         Caution, DownloadFour, MenuUnfold, MenuFold
     },
     props: {
+        subTaskCode: String,
         data: {
             type: Object,
             default: () => ({})
@@ -89,40 +99,64 @@ export default {
     },
     data() {
         return {
+            VUE_APP_API_ROOT: process.env.VUE_APP_API_ROOT,
             CssVariables,
-            active_item: this.data.targets[0].id,
-            caches: {},
+            active_item: '',
+            users: [],
             pageSize: 10,
             pageIndex: 1,
             total: 0,
             file_list: [],
             is_fold: false,
-            current_file: null
-        }
-    },
-    computed: {
-        abnormal() {
-            if (this.current_file?.status !== 'abnormal') return null
-            return this.current_file
+            current_file: null,
+            error_events: []  // 异常事件
         }
     },
     created() {
-        this.fetchTargetFileList(this.active_item)
+        this.fetchTaskUsers()
     },
     methods: {
+        isErrorStatus(status) {
+            return [3, 4, 6].includes(status)
+        },
+        fetchTaskUsers() {
+            api.get(`taskDetails/user/${this.subTaskCode}`).then(data => {
+                this.users = data.res
+                if (data.res.length > 0) {
+                    this.active_item = this.users[0].distUserId
+                    this.file_list = []
+                    this.fetchTargetFileList(this.active_item)
+                }
+            })
+        },
         fetchTargetFileList(id) {
-            api.get("/monitoring/getTargetFileList", {
-                params: {
-                    id,
-                    pageIndex: this.pageIndex,
-                    pageSize: this.pageSize,
+            api.post("taskDetails/page", {
+                data: {
+                    subTaskCode: this.subTaskCode,
+                    distUserId: id
+                },
+                pageRequest: {
+                    page: this.pageIndex,
+                    size: this.pageSize,
                     total: this.total  // 仅用于mock数据
                 }
-            }).then(({ data }) => {
+            }).then(({ res }) => {
                 if (this.active_item !== id) return
-                this.file_list = data.list
-                this.total = data.total
+                this.file_list = res.data
+                this.total = res.pageInfo.total
                 this.current_file = null
+            })
+        },
+        fetchErrorEvent() {
+            if (!this.isErrorStatus(this.current_file.status)) {  // 没有异常 不查询
+                this.error_events = []
+                return
+            }
+            api.post('errorEvent/searchByCondition', {
+                taskDetailsId: this.current_file.id,
+                limit: 10
+            }).then(data => {
+                this.error_events = data.res
             })
         },
         onChangePageIndex(pageIndex) {
@@ -142,6 +176,9 @@ export default {
         onSelectedFile(row) {
             if (this.current_file?.id === row.id) return
             this.current_file = row
+            this.$nextTick(() => {
+                this.fetchErrorEvent()
+            })
         }
     },
 }
@@ -208,18 +245,38 @@ export default {
     }
     .abnormal-wrap {
         width: 280px;
-        .el-descriptions .el-descriptions__body {
-            padding: 16px;
-            .el-descriptions-item__label {
-                font-size: 14px;
-                font-weight: 600;
+        .el-descriptions {
+            margin-right: 0;
+            .el-descriptions__body {
+                padding: 16px;
+                .el-descriptions-item__label {
+                    font-size: 14px;
+                    font-weight: 600;
+                }
             }
+        }
+        .error-event-scroll-wrap {
+            max-height: 368px;
+            overflow: auto;
         }
     }
     .unfold-abnormal {
         position: absolute;
         right: 20px;
         top: 23px;
+    }
+    .padding-left {
+        position: relative;
+        padding-left: 16px;
+        .error-tag {
+            left: 0;
+        }
+    }
+    .error-tag {
+        position: absolute;
+        left: 8px;
+        top: 50%;
+        transform: translate(0, -50%);
     }
 }
 </style>

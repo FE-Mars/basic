@@ -39,10 +39,10 @@ let asyncRoutes = [
         },
         children: [
             {
-                path: '/task_monitoring',
+                path: '/task_supervision',
                 component: Layout,
-                redirect: '/task_monitoring/index',
-                name: 'taskMonitoring',
+                redirect: '/task_supervision/index',
+                name: 'taskSupervision',
                 meta: {
                     title: '任务监督',
                     icon: 'fenfa'
@@ -50,12 +50,12 @@ let asyncRoutes = [
                 children: [
                     {
                         path: 'index',
-                        name: 'taskMonitoringIndex',
-                        component: () => import(/* webpackChunkName: 'monitoring' */ '@/views/monitoring'),
+                        name: 'taskSupervisionIndex',
+                        component: () => import(/* webpackChunkName: 'supervision' */ '@/views/supervision'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_monitoring'
+                            activeMenu: '/task_supervision'
                         }
                     }
                 ]
