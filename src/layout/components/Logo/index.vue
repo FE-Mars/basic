@@ -27,7 +27,7 @@ export default {
     data() {
         return {
             title: process.env.VUE_APP_TITLE,
-            logo: require('@/assets/images/logo.png')
+            logo: require('@/assets/images/logo.jpg')
         }
     },
     computed: {

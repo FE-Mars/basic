@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-07-30 17:18:07
+ * @LastEditTime: 2023-08-06 16:07:30
  * @LastEditors: Wang Jun
  * @Description: 任务分发
 -->
@@ -11,15 +11,15 @@
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="全局任务编号">
                     <el-input
-                        v-model="filters.name"
+                        v-model="filters.subTaskCode"
                         placeholder="全局任务编号"
                         clearable
                     />
                 </el-form-item>
                 <el-form-item label="任务时间">
                     <el-date-picker
-                        v-model="filters.date"
-                        type="datetime"
+                        v-model="filters.createdTime"
+                        type="date"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -34,25 +34,25 @@
                 <div class="list-header">
                     <h3 class="my-title">任务分发表</h3>
                     <template v-if="selections && selections.length">
-                        <el-button type="primary"><refresh-one theme="filled" size="12" /> 重新分发</el-button>
-                        <el-button type="danger"><delete-five theme="filled" size="12" /> 删除</el-button>
+                        <el-button type="primary" @click="onRedistribution(selections)"><refresh-one theme="filled" size="12" /> 重新分发</el-button>
+                        <el-button type="danger" @click="onDelete(selections)"><delete-five theme="filled" size="12" /> 删除</el-button>
                     </template>
                 </div>
                 <el-table :data="list" @selection-change="onSelectionChange">
                     <el-table-column type="selection" width="55" />
-                    <el-table-column prop="name" label="全局任务编号" />
-                    <el-table-column prop="date_time" label="任务时间" />
+                    <el-table-column prop="mainTaskCode" label="全局任务编号" />
+                    <el-table-column prop="createdTime" label="任务时间" />
                     <el-table-column label="操作" width="250px">
                         <template slot-scope="scope">
-                            <el-button type="text" @click="onDownload(scope.$index, scope.row)">
+                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/taskInfo/download/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
-                            </el-button>
-                            <el-button type="text" @click="onRedistribution(scope.$index, scope.row)">
+                            </el-link>
+                            <el-link :underline="false" type="primary" @click="onRedistribution(scope.$index, scope.row)">
                                 <refresh-one theme="filled" size="14" :fill="CssVariables.color_primary" /> 重分
-                            </el-button>
-                            <el-button type="text" @click="onDelete(scope.$index, scope.row)">
+                            </el-link>
+                            <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
                                 <delete-five theme="filled" size="14" :fill="CssVariables.color_danger" /> 删除
-                            </el-button>
+                            </el-link>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -74,6 +74,7 @@
 <script>
 import { DownloadFour, DeleteFive, RefreshOne } from '@icon-park/vue'
 import CssVariables from '@/assets/styles/resources/variables.scss'
+import api from '@/api/index'
 export default {
     name: "Distribution",
     components: {
@@ -81,26 +82,30 @@ export default {
     },
     data() {
         return {
+            VUE_APP_API_ROOT: process.env.VUE_APP_API_ROOT,
             CssVariables,
             filters: this.getDefaultFilters(),
             pageIndex: 1,
             pageSize: 15,
             total: 0,
-            list: [{ name: 'hello.sdfs', date_time: '2023-07-30 18:49:56' }, { name: 'hello.sdfs', date_time: '2023-07-30 18:49:56' }],
+            list: [],
             selections: []
         }
+    },
+    created() {
+        this.onSearch()
     },
     methods: {
         getDefaultFilters() {
             return {
-                name: "",
-                date: null,
+                subTaskCode: "",
+                createdTime: null,
             }
         },
         onReset() {
             this.filters = this.getDefaultFilters()
             this.$nextTick(() => {
-                this.fetchData()
+                this.onSearch()
             })
         },
         onSearch(options) {
@@ -117,45 +122,76 @@ export default {
                 message: '已开始下载!'
             })
         },
-        onRedistribution() {
-            this.$confirm('此操作将重新分发该任务, 是否继续?', '提示', {
+        onRedistribution(ids) {
+            if (Array.isArray(ids) && ids.length > 5) {
+                return this.$alert('最多只能同时分发5条数据', '提示', {
+                    confirmButtonText: '知道了',
+                })
+            }
+            this.$confirm('此操作将重新分发任务, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '重新分发成功!'
-                })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消重新分发'
+                api.get('taskInfo/reDist', {
+                    params: { ids: Array.isArray(ids) ? ids.join(',') : ids }
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '重新分发成功!'
+                    })
+                    this.onSearch()
+                }).catch(() => {
+                    this.$message({
+                        type: 'error',
+                        message: '重新分发失败'
+                    })
                 })
             })
         },
-        onDelete() {
-            this.$confirm('此操作将永久删除该任务, 是否继续?', '提示', {
+        onDelete(ids) {
+            if (Array.isArray(ids) && ids.length > 5) {
+                return this.$alert('最多只能同时删除5条数据', '提示', {
+                    confirmButtonText: '知道了',
+                })
+            }
+            this.$confirm('此操作将永久删除任务, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                })
-            }).catch(() => {
-                this.$message({
-                    type: 'info',
-                    message: '已取消删除'
+                api.delete('taskInfo', {
+                    data: { ids: Array.isArray(ids) ? ids.join(',') : ids }
+                }).then(() => {
+                    this.$message({
+                        type: 'success',
+                        message: '删除成功!'
+                    })
+                    this.onSearch()
+                }).catch(() => {
+                    this.$message({
+                        type: 'error',
+                        message: '删除失败'
+                    })
                 })
             })
         },
         onSelectionChange(selections) {
-            this.selections = selections
+            this.selections = selections.map(item => item.id).filter(Boolean)
         },
         fetchData() {
-
+            this.selections = []   // 置空已选
+            api.post('taskInfo/page', {
+                data: this.filters,
+                pageRequest: {
+                    page: this.pageIndex,
+                    size: this.pageSize
+                }
+            }).then(({ res }) => {
+                console.log(res)
+                this.list = res.data
+                this.total = res.pageInfo.total
+            })
         }
     }
 }
@@ -176,6 +212,13 @@ export default {
         .el-table-column--selection {
             .cell {
                 text-align: center;
+            }
+        }
+        .el-link {
+            margin-right: 12px;
+            font-size: 12px;
+            &:last-child {
+                margin-right: 0;
             }
         }
     }

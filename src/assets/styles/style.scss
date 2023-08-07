@@ -1,16 +1,24 @@
 @import url('./resources/variables.scss');
-.is-success {
+.is-success,
+.status2,
+.status5 {
     color: $color-success;
 }
-.is-fail {
+.is-fail,
+.status4 {
     color: $color-danger;
 }
 .is-warning,
-.is-timeout {
+.is-timeout,
+.status3 {
     color: $color-warning;
 }
-.is-running {
+.is-running,
+.status1 {
     color: #5482ee;
+}
+.status6 {
+    color: #f4a7f0;
 }
 .my-title {
     display: flex;
