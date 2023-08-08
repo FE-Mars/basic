@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-05 16:35:51
+ * @LastEditTime: 2023-08-07 17:46:29
  * @LastEditors: Wang Jun
  * @Description: 入库监管
 -->
@@ -20,7 +20,6 @@
                     <el-select
                         v-model="filters.status"
                         placeholder="任务执行状态"
-                        multiple
                         clearable
                         style="width: 200px;"
                     >
@@ -56,10 +55,6 @@ const STATUS = [
 ]
 export default {
     name: "SupervisionIn",
-    beforeRouteLeave(to, from, next) {
-        this.$store.commit('keepAlive/add', 'SupervisionIn')
-        next()
-    },
     data() {
         return {
             filters: this.getDefaultFilters(),
@@ -70,7 +65,7 @@ export default {
         getDefaultFilters() {
             return {
                 name: "",
-                status: [],
+                status: '',
                 date: null,
             }
         },

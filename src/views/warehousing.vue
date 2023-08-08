@@ -1,9 +1,9 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-06 16:07:30
+ * @LastEditTime: 2023-08-08 17:00:57
  * @LastEditors: Wang Jun
- * @Description: 任务分发
+ * @Description: 入库任务
 -->
 <template>
     <div class="page-distribution">
@@ -32,9 +32,9 @@
         <page-main>
             <div class="list-wrap">
                 <div class="list-header">
-                    <h3 class="my-title">任务分发表</h3>
+                    <h3 class="my-title">任务入库表</h3>
                     <template v-if="selections && selections.length">
-                        <el-button type="primary" @click="onRedistribution(selections)"><refresh-one theme="filled" size="12" /> 重新分发</el-button>
+                        <el-button type="primary" @click="onReWarehousing(selections)"><refresh-one theme="filled" size="12" /> 重新入库</el-button>
                         <el-button type="danger" @click="onDelete(selections)"><delete-five theme="filled" size="12" /> 删除</el-button>
                     </template>
                 </div>
@@ -47,8 +47,8 @@
                             <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/taskInfo/download/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
-                            <el-link :underline="false" type="primary" @click="onRedistribution(scope.$index, scope.row)">
-                                <refresh-one theme="filled" size="14" :fill="CssVariables.color_primary" /> 重分
+                            <el-link :underline="false" type="primary" @click="onReWarehousing(scope.$index, scope.row)">
+                                <refresh-one theme="filled" size="14" :fill="CssVariables.color_primary" /> 重新入库
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
                                 <delete-five theme="filled" size="14" :fill="CssVariables.color_danger" /> 删除
@@ -122,13 +122,13 @@ export default {
                 message: '已开始下载!'
             })
         },
-        onRedistribution(ids) {
+        onReWarehousing(ids) {
             if (Array.isArray(ids) && ids.length > 5) {
-                return this.$alert('最多只能同时分发5条数据', '提示', {
+                return this.$alert('最多只能同时入库5条数据', '提示', {
                     confirmButtonText: '知道了',
                 })
             }
-            this.$confirm('此操作将重新分发任务, 是否继续?', '提示', {
+            this.$confirm('此操作将重新入库任务, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
@@ -138,13 +138,13 @@ export default {
                 }).then(() => {
                     this.$message({
                         type: 'success',
-                        message: '重新分发成功!'
+                        message: '重新入库成功!'
                     })
                     this.onSearch()
                 }).catch(() => {
                     this.$message({
                         type: 'error',
-                        message: '重新分发失败'
+                        message: '重新入库失败'
                     })
                 })
             })

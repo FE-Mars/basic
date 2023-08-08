@@ -90,10 +90,10 @@ let asyncRoutes = [
                 ]
             },
             {
-                path: '/inbound_task_management',
+                path: '/warehousing_management',
                 component: Layout,
-                redirect: '/inbound_task_management/index',
-                name: 'inboundTaskManagement',
+                redirect: '/warehousing_management/index',
+                name: 'warehousingManagement',
                 meta: {
                     title: '入库任务管理',
                     icon: 'warehousing',
@@ -102,21 +102,21 @@ let asyncRoutes = [
                 children: [
                     {
                         path: 'index',
-                        name: 'inboundTaskManagementIndex',
-                        component: () => import(/* webpackChunkName: 'inbound_task_management' */ '@/views/inbound_task_management'),
+                        name: 'warehousingManagementIndex',
+                        component: () => import(/* webpackChunkName: 'warehousing_management' */ '@/views/warehousing'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/inbound_task_management'
+                            activeMenu: '/warehousing_management'
                         }
                     }
                 ]
             },
             {
-                path: '/outbound_list_management',
+                path: '/ex-warehouse_management',
                 component: Layout,
-                redirect: '/outbound_list_management/index',
-                name: 'outboundListManagement',
+                redirect: '/ex-warehouse_management/index',
+                name: 'exWarehouseManagement',
                 meta: {
                     title: '出库清单管理',
                     icon: 'outbound',
@@ -125,12 +125,12 @@ let asyncRoutes = [
                 children: [
                     {
                         path: 'index',
-                        name: 'outboundListManagementIndex',
-                        component: () => import(/* webpackChunkName: 'outbound_list_management' */ '@/views/outbound_list_management'),
+                        name: 'exWarehouseManagementIndex',
+                        component: () => import(/* webpackChunkName: 'ex-warehouse_management' */ '@/views/ex-warehouse'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/outbound_list_management'
+                            activeMenu: '/ex-warehouse_management'
                         }
                     }
                 ]

@@ -55,3 +55,11 @@
         margin-bottom: 0;
     }
 }
+.el-table + .el-pagination {
+    padding: 0;
+    margin-left: -5px;
+    margin-top: 20px;
+    .el-pagination__jump {
+        margin-left: 0;
+    }
+}

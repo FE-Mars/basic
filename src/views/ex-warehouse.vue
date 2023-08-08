@@ -1,9 +1,9 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-06 16:23:16
+ * @LastEditTime: 2023-08-08 17:03:05
  * @LastEditors: Wang Jun
- * @Description: 分发清单
+ * @Description: 出库清单
 -->
 <template>
     <div class="page-distribution">
@@ -13,13 +13,6 @@
                     <el-input
                         v-model="filters.subTaskCode"
                         placeholder="全局任务编号"
-                        clearable
-                    />
-                </el-form-item>
-                <el-form-item label="分发对象">
-                    <el-input
-                        v-model="filters.distUserName"
-                        placeholder="分发对象"
                         clearable
                     />
                 </el-form-item>
@@ -40,7 +33,7 @@
         <page-main>
             <div class="list-wrap">
                 <div class="list-header">
-                    <h3 class="my-title">任务清单表</h3>
+                    <h3 class="my-title">出库清单表</h3>
                     <template v-if="selections && selections.length">
                         <el-button type="danger" @click="onDelete(selections)"><delete-five theme="filled" size="12" /> 删除</el-button>
                     </template>
@@ -48,7 +41,6 @@
                 <el-table :data="list" @selection-change="onSelectionChange">
                     <el-table-column type="selection" width="55" />
                     <el-table-column prop="subTaskCode" label="全局任务编号" />
-                    <el-table-column prop="distUserName" label="分发对象" />
                     <el-table-column prop="createdTime" label="任务时间" />
                     <el-table-column label="操作" width="250px">
                         <template slot-scope="scope">

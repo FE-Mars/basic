@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-05 16:15:34
+ * @LastEditTime: 2023-08-07 17:46:38
  * @LastEditors: Wang Jun
  * @Description: 出库监管
 -->
@@ -20,7 +20,6 @@
                     <el-select
                         v-model="filters.status"
                         placeholder="任务执行状态"
-                        multiple
                         clearable
                         style="width: 200px;"
                     >
@@ -66,7 +65,7 @@ export default {
         getDefaultFilters() {
             return {
                 name: "",
-                status: [],
+                status: "",
                 date: null,
             }
         },
