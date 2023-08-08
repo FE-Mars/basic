@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-08 17:03:05
+ * @LastEditTime: 2023-08-08 19:57:58
  * @LastEditors: Wang Jun
  * @Description: 出库清单
 -->
@@ -11,7 +11,7 @@
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="全局任务编号">
                     <el-input
-                        v-model="filters.subTaskCode"
+                        v-model="filters.taskId"
                         placeholder="全局任务编号"
                         clearable
                     />
@@ -19,7 +19,7 @@
 
                 <el-form-item label="任务时间">
                     <el-date-picker
-                        v-model="filters.createdTime"
+                        v-model="filters.takeTime"
                         type="date"
                         placeholder="选择日期"
                     />
@@ -40,11 +40,11 @@
                 </div>
                 <el-table :data="list" @selection-change="onSelectionChange">
                     <el-table-column type="selection" width="55" />
-                    <el-table-column prop="subTaskCode" label="全局任务编号" />
-                    <el-table-column prop="createdTime" label="任务时间" />
+                    <el-table-column prop="taskId" label="全局任务编号" />
+                    <el-table-column prop="takeTime" label="任务时间" />
                     <el-table-column label="操作" width="250px">
                         <template slot-scope="scope">
-                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/distList/download/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
+                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/outWarehouseTaskManage/downLoad/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
@@ -95,8 +95,8 @@ export default {
     methods: {
         getDefaultFilters() {
             return {
-                subTaskCode: "",
-                createdTime: null,
+                taskId: "",
+                takeTime: null,
             }
         },
         onReset() {
@@ -113,12 +113,6 @@ export default {
                 this.fetchData()
             })
         },
-        onDownload() {
-            this.$message({
-                type: 'success',
-                message: '已开始下载!'
-            })
-        },
         onDelete(ids) {
             if (Array.isArray(ids) && ids.length > 5) {
                 return this.$alert('最多只能同时删除5条数据', '提示', {
@@ -130,8 +124,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.delete('distList', {
-                    data: { ids: Array.isArray(ids) ? ids.join(',') : ids }
+                api.delete('outWarehouseTaskManage/delete', {
+                    data: { ids: Array.isArray(ids) ? ids : [ids] }
                 }).then(() => {
                     this.$message({
                         type: 'success',
@@ -151,16 +145,13 @@ export default {
         },
         fetchData() {
             this.selections = []   // 置空已选
-            api.post('distList/page', {
-                data: this.filters,
-                pageRequest: {
-                    page: this.pageIndex,
-                    size: this.pageSize
-                }
-            }).then(({ res }) => {
-                console.log(res)
-                this.list = res.data
-                this.total = res.pageInfo.total
+            api.post('outWarehouseTaskManage/list', {
+                ...this.filters,
+                pageNum: this.pageIndex,
+                rows: this.pageSize
+            }).then(({ data }) => {
+                this.list = data.list
+                this.total = data.total
             })
         }
     }
