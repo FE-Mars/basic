@@ -1,46 +1,22 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-06 15:11:03
+ * @LastEditTime: 2023-08-09 19:40:46
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
 <template>
-    <div v-if="!disabled" class="expand-detail">
-        <div class="targets-wrap">
-            <h3 class="my-title">分发用户</h3>
-            <div class="target-list">
-                <div
-                    v-for="user in users"
-                    :key="user.distUserId"
-                    :class="{ 'target-item': true, 'is-active': user.distUserId === active_item }"
-                    @click="onClick(user.distUserId)"
-                >
-                    <Caution class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
-                    <span class="text">{{ user.distUserName }}</span>
-                    <el-tooltip :open-delay="300" content="下载清单" placement="top">
-                        <a :href="`${VUE_APP_API_ROOT}/distList/download/${user.distUserId}`" :download="user.distUserName + '.json'" target="_blank" rel="下载清单" @click.stop>
-                            <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
-                        </a>
-                    </el-tooltip>
-                </div>
-            </div>
-        </div>
+    <div class="expand-detail">
         <div class="file-list-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
-            <h3 class="my-title">分发明细</h3>
-            <el-table :data="file_list" height="320px" highlight-current-row @current-change="onSelectedFile">
-                <el-table-column prop="distFileName">
-                    <template slot="header">
-                        <span class="padding-left">文件名称</span>
-                    </template>
-                    <template slot-scope="props">
-                        <div class="padding-left">
-                            <Caution v-if="isErrorStatus(props.row.status)" class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
-                            <span>{{ props.row.distFileName }}</span>
-                        </div>
+            <h3 class="my-title">{{ type === 1 ? '入库明细' : '出库明细' }}</h3>
+            <el-table :data="detail_list" height="320px" highlight-current-row @current-change="onSelectedFile">
+                <el-table-column prop="fileName" label="文件名称" />
+                <el-table-column prop="status" label="状态">
+                    <template slot-scope="scope">
+                        <span :class="`is-${['fail', 'success'][scope.row.status]}`">{{ ['失败', '成功'][scope.row.status] }}</span>
                     </template>
                 </el-table-column>
-                <el-table-column prop="dataStartTime" label="时间" width="150px" />
+                <el-table-column prop="createdTime" :label="type == 1 ? '入库时间' : '出库时间'" width="150px" />
             </el-table>
             <el-pagination
                 background
@@ -62,10 +38,10 @@
                 <div v-if="error_events.length" class="error-event-scroll-wrap">
                     <el-descriptions v-for="error in error_events" :key="error.id" :column="1" direction="vertical">
                         <el-descriptions-item label="异常事件类型">
-                            <el-tag type="danger">{{ error.type }}</el-tag>
+                            <el-tag type="danger">{{ error.errorType }}</el-tag>
                         </el-descriptions-item>
                         <el-descriptions-item label="异常详细信息">
-                            {{ error.description }}
+                            {{ error.errorDescription }}
                         </el-descriptions-item>
                     </el-descriptions>
                 </div>
@@ -79,22 +55,21 @@
 </template>
 <script>
 import api from '@/api'
-import { Caution, DownloadFour, MenuFold, MenuUnfold } from '@icon-park/vue'
+import { MenuFold, MenuUnfold } from '@icon-park/vue'
 import CssVariables from '@/assets/styles/resources/variables.scss'
+
+// 文件状态  0  失败   1  成功
+
 export default {
     name: "ExpandDetail",
     components: {
-        Caution, DownloadFour, MenuUnfold, MenuFold
+        MenuUnfold, MenuFold
     },
     props: {
-        subTaskCode: String,
-        data: {
-            type: Object,
-            default: () => ({})
-        },
-        disabled: {
-            type: Boolean,
-            default: false
+        taskId: String,
+        type: {         // 1 入库 2 出库
+            type: Number,
+            default: 1
         }
     },
     data() {
@@ -106,63 +81,49 @@ export default {
             pageSize: 10,
             pageIndex: 1,
             total: 0,
-            file_list: [],
+            detail_list: [],
             is_fold: false,
             current_file: null,
             error_events: []  // 异常事件
         }
     },
+    computed: {
+        basePath() {
+            return this.type === 1 ? 'warehouseTaskMonitor/warehouse' : 'outWarehouseTaskMonitor/outWarehouse'
+        }
+    },
     created() {
-        this.fetchTaskUsers()
+        this.fetchDetailList()
     },
     methods: {
-        isErrorStatus(status) {
-            return [3, 4, 6].includes(status)
-        },
-        fetchTaskUsers() {
-            api.get(`taskDetails/user/${this.subTaskCode}`).then(data => {
-                this.users = data.res
-                if (data.res.length > 0) {
-                    this.active_item = this.users[0].distUserId
-                    this.file_list = []
-                    this.fetchTargetFileList(this.active_item)
-                }
-            })
-        },
-        fetchTargetFileList(id) {
-            api.post("taskDetails/page", {
-                data: {
-                    subTaskCode: this.subTaskCode,
-                    distUserId: id
-                },
-                pageRequest: {
-                    page: this.pageIndex,
-                    size: this.pageSize,
-                    total: this.total  // 仅用于mock数据
-                }
-            }).then(({ res }) => {
-                if (this.active_item !== id) return
-                this.file_list = res.data
-                this.total = res.pageInfo.total
+        fetchDetailList() {   // 查询明细
+            api.post(`${this.basePath}Info`, {
+                taskId: this.taskId,
+                fileStatus: null,
+                pageNum: this.pageIndex,
+                rows: this.pageSize,
+                total: this.total  // 仅用于mock数据
+
+            }).then(({ data }) => {
+                this.detail_list = data.list
+                this.total = data.total
                 this.current_file = null
             })
         },
-        fetchErrorEvent() {
-            if (!this.isErrorStatus(this.current_file.status)) {  // 没有异常 不查询
+        fetchErrorEvent(id) {
+            if (this.current_file.status) {  // 没有异常 不查询
                 this.error_events = []
                 return
             }
-            api.post('errorEvent/searchByCondition', {
-                taskDetailsId: this.current_file.id,
-                limit: 10
-            }).then(data => {
-                this.error_events = data.res
+            api.get(`${this.basePath}Error/${id}`).then(({ data }) => {
+                if (id != this.current_file.id) return   // 防止请求过慢时，切换文件，导致数据错乱
+                this.error_events = Array.isArray(data) ? data : [data]
             })
         },
         onChangePageIndex(pageIndex) {
             this.pageIndex = pageIndex
             this.$nextTick(() => {
-                this.fetchTargetFileList(this.active_item)
+                this.fetchDetailList(this.active_item)
             })
         },
         onClick(id) {
@@ -170,14 +131,14 @@ export default {
             this.pageIndex = 1
             this.total = 0
             this.$nextTick(() => {
-                this.fetchTargetFileList(id)
+                this.fetchDetailList(id)
             })
         },
         onSelectedFile(row) {
             if (this.current_file?.id === row.id) return
             this.current_file = row
             this.$nextTick(() => {
-                this.fetchErrorEvent()
+                this.fetchErrorEvent(this.current_file.id)
             })
         }
     },

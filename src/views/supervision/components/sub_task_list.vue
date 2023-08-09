@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-06 00:47:15
- * @LastEditTime: 2023-08-06 14:07:23
+ * @LastEditTime: 2023-08-09 17:38:06
  * @LastEditors: Wang Jun
  * @Description: 子任务列表
 -->
@@ -9,23 +9,23 @@
     <div v-loading="loading" class="sub-task-list">
         <el-collapse-transition>
             <el-collapse v-if="list.length" v-model="activeName" accordion @change="onChange">
-                <el-collapse-item v-for="item in list" :key="item.subTaskCode" title="一致性 Consistency" :name="item.subTaskCode">
+                <el-collapse-item v-for="item in list" :key="item.taskId" title="一致性 Consistency" :name="item.taskId">
                     <div slot="title" class="sub-task-header">
                         <el-descriptions :column="6" size="mini">
-                            <el-descriptions-item :label="item.subTaskCode" label-class-name="task-code" />
-                            <el-descriptions-item label="总数">{{ item.totalCount }}</el-descriptions-item>
+                            <el-descriptions-item :label="item.taskId" label-class-name="task-code" />
+                            <el-descriptions-item label="总数">{{ item.fileCount }}</el-descriptions-item>
                             <el-descriptions-item label="成功数" content-class-name="is-success">{{ item.succeedCount }}</el-descriptions-item>
                             <el-descriptions-item label="失败数" content-class-name="is-fail">{{ item.failedCount }}</el-descriptions-item>
                             <el-descriptions-item label="开始时间">{{ item.startTime }}</el-descriptions-item>
                             <el-descriptions-item label="结束时间">{{ item.endTime }}</el-descriptions-item>
                         </el-descriptions>
-                        <el-tooltip :open-delay="300" content="下载任务文件" placement="top">
-                            <a :href="`${VUE_APP_API_ROOT}/taskInfo/download/${item.subTaskCode}`" :download="item.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
+                        <el-tooltip :open-delay="300" content="下载文件" placement="top">
+                            <a :href="`${VUE_APP_API_ROOT}/warehouseTaskMonitor/downLoad/${item.taskId}`" download target="_blank" rel="下载任文件" @click.stop>
                                 <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
                             </a>
                         </el-tooltip>
                     </div>
-                    <ExpandDetail v-if="activeNames.includes(item.subTaskCode)" :sub-task-code="item.subTaskCode" />
+                    <ExpandDetail v-if="activeNames.includes(item.taskId)" :task-id="item.taskId" />
                 </el-collapse-item>
             </el-collapse>
         </el-collapse-transition>
@@ -54,8 +54,7 @@ export default {
         }
     },
     props: {
-        mainTaskCode: String,    // 主任务编号
-        disabled: Boolean       // 是否禁用
+        taskBelongId: String,    // 主任务编号
     },
     data() {
         return {
@@ -73,7 +72,7 @@ export default {
             immediate: true,
             handler(value) {
                 console.log(value)
-                if (!value && this.mainTaskCode) {
+                if (!value && this.taskBelongId) {
                     this.getSubTaskList()
                 }
             }
@@ -87,8 +86,11 @@ export default {
         getSubTaskList() {
             if (this.is_fetched) return
             this.loading = true
-            api.get(`/supervisionTask/task/${this.mainTaskCode}`).then(data => {
-                this.list = data.res
+            api.post('warehouseTaskMonitor/list', {
+                taskBelongId: this.taskBelongId,
+                status: this.status
+            }).then(({ data }) => {
+                this.list = data.list
                 this.is_fetched = true
                 this.loading = false
             })

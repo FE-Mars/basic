@@ -11,9 +11,9 @@
                                     <component :is="card.icon" theme="filled" size="32" :fill="card.icon_color" />
                                     <div class="label">{{ card.label }}</div>
                                 </el-col>
-                                <el-col :span="12"><span class="unit">{{ card.unit }}</span></el-col>
+                                <el-col :span="12" class="value-wrap"><span class="value">{{ today[card.prop] || 0 }}<span class="unit">{{ card.unit }}</span></span></el-col>
                             </el-row>
-                            <el-row type="flex">
+                            <!-- <el-row type="flex">
                                 <el-col :span="12">
                                     <span class="value">{{ today[card.prop] || 0 }}</span>
                                 </el-col>
@@ -27,7 +27,7 @@
                                         <arrow-down theme="filled" size="14" :fill="CssVariables.color_danger" />
                                     </template>
                                 </el-col>
-                            </el-row>
+                            </el-row> -->
                         </div>
                     </el-card>
                 </el-col>
@@ -47,13 +47,13 @@
                             <h3 class="my-title">异常事件</h3>
                         </div>
                         <el-table v-if="show_abnormal_list.length" :data="show_abnormal_list" height="410px">
-                            <el-table-column prop="fileName" label="文件名称" show-overflow-tooltip />
-                            <el-table-column prop="type" label="异常类型" show-overflow-tooltip width="150px">
+                            <el-table-column prop="errorName" label="文件名称" show-overflow-tooltip />
+                            <el-table-column prop="errorType" label="异常类型" show-overflow-tooltip width="150px">
                                 <template slot-scope="scope">
-                                    <el-tooltip effect="light">
-                                        <div slot="content" style="max-width: 400px;" v-html="scope.row.description" />
+                                    <el-tooltip effect="light" placement="top">
+                                        <div slot="content" style="max-width: 400px;" v-html="scope.row.errorDescription" />
                                         <el-tag type="danger">
-                                            {{ scope.row.type }}
+                                            {{ scope.row.errorType }}
                                         </el-tag>
                                     </el-tooltip>
                                 </template>
@@ -83,19 +83,15 @@ export default {
             CssVariables,
             day_count: 7,  // 显示几天的数据
             error_event_limit: 100,  // 异常事件最多显示多少条
-            today: {total: 0, succeedCount: 0, failedCount: 0, fileSize: 0, unit: 'KB'},  // 今日数据
+            today: {},  // 今日数据
             abnormal_list: [],  // 异常事件列表
             show_abnormal_list: [],  // 显示的异常事件列表
             current_scroll_index: 9,  // 当前滚动到的异常事件索引
-        }
-    },
-    computed: {
-        data_cards() {
-            return [  // 数据卡片
-                { prop: 'total', label: '今日分发总数', unit: '个/天', icon: 'Dashboard', icon_color: CssVariables.color_primary },
-                { prop: 'succeedCount', label: '成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
-                { prop: 'failedCount', label: '失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
-                { prop: 'fileSize', label: '今日分发总体量', unit: `${this.today.unit}/天`, icon: 'Change', icon_color: CssVariables.color_primary },
+            data_cards: [  // 数据卡片
+                { prop: 'inTask.succeedCount', label: '入库成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
+                { prop: 'inTask.failedCount', label: '入库失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
+                { prop: 'outTask.succeedCount', label: '出库成功数', unit: '个/天', icon: 'Success', icon_color: CssVariables.color_success },
+                { prop: 'outTask.failedCount', label: '出库失败数', unit: '个/天', icon: 'worried-face', icon_color: CssVariables.color_danger },
             ]
         }
     },
@@ -165,22 +161,21 @@ export default {
             this.my_chart = my_chart
         },
         fetchStatisticsToday() {
-            return api.get("/statistics/today").then(({res}) => {
-                console.log(res)
-                res.total = res.failedCount + res.succeedCount
-                for (const key in res) {
-                    if (Object.hasOwnProperty.call(res, key)) {
-                        res[key + '_rate'] = (Math.random() * 100).toFixed(2)
-                    }
+            return api.get("/taskInfoStatistics/taskToday").then(({data}) => {
+                const { inTask, outTask } = data, result = {}
+                for (let key in inTask) {
+                    result[`inTask.${key}`] = inTask[key] || 0
                 }
-                this.today = res
-                console.log(this.today)
+                for (let key in outTask) {
+                    result[`outTask.${key}`] = outTask[key] || 0
+                }
+                this.today = result
             })
         },
         fetchStatisticsRecentForDays() {   // 查询最近几天的数据
-            return api.get(`statistics/recent/${this.day_count}`).then(({res}) => {
+            return api.get(`askInfoStatistics/warehouseTaskDays/${this.day_count}`).then(({data}) => {
                 const category = [], success = [], failed = []
-                res.forEach(item => {
+                data.forEach(item => {
                     category.push(item.date)
                     success.push(item.succeedCount)
                     failed.push(item.failedCount)
@@ -204,15 +199,13 @@ export default {
         },
         fetchAbnormalList() {
             this.fetchAbnormalListTimer && clearTimeout(this.fetchAbnormalListTimer)  // 清除定时器
-            return api.post("/errorEvent/searchByCondition", {
-                limit: this.error_event_limit
-            }).then(({ res }) => {
-                console.log(res)
-                this.abnormal_list = res.data.map(item => {
-                    item.description = item.description.split('\n').map(line => {
+            return api.get("taskInfoStatistics/errorInfo").then(({ data }) => {
+                console.log(data)
+                this.abnormal_list = data.map(item => {
+                    item.errorDescription = item.errorDescription.split('\n').map(line => {
                         return `<p style="margin: 4px 0;">${line}</p>`
                     }).join('')
-                    console.log(item.description)
+                    console.log(item.errorDescription)
                     return item
                 })
                 this.current_scroll_index = 9
@@ -270,31 +263,42 @@ export default {
             font-size: 14px;
             color: #909399;
         }
-        .unit {
-            display: block;
-            text-align: right;
-        }
+        // .unit {
+        //     display: block;
+        //     text-align: right;
+        // }
         .value {
             font-weight: 500;
             font-size: 30px;
         }
-        .rate-wrap {
-            text-align: right;
-            .rate {
-                display: inline-block;
-                padding: 0 10px;
-                margin-right: 4px;
-                height: 22px;
-                line-height: 22px;
-                font-size: 14px;
-                color: #fff;
-                background-color: $color-danger;
-                border-radius: 11px;
-                &.is-rise {
-                    background-color: $color-success;
-                }
+        .value-wrap {
+            display: flex;
+            justify-content: flex-end;
+            span {
+                line-height: 1;
+                vertical-align: middle;
+            }
+            .unit {
+                margin-left: 4px;
             }
         }
+        // .rate-wrap {
+        //     text-align: right;
+        //     .rate {
+        //         display: inline-block;
+        //         padding: 0 10px;
+        //         margin-right: 4px;
+        //         height: 22px;
+        //         line-height: 22px;
+        //         font-size: 14px;
+        //         color: #fff;
+        //         background-color: $color-danger;
+        //         border-radius: 11px;
+        //         &.is-rise {
+        //             background-color: $color-success;
+        //         }
+        //     }
+        // }
     }
     .el-statistic {
         .title {
