@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-09 20:04:04
+ * @LastEditTime: 2023-08-09 20:06:30
  * @LastEditors: Wang Jun
  * @Description: 出库监管
 -->
@@ -31,7 +31,7 @@
                         />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="分发时间">
+                <el-form-item label="出库时间">
                     <el-date-picker
                         v-model="filters.dateTime"
                         type="date"
