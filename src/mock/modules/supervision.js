@@ -1,7 +1,7 @@
 /*
  * @Author: Wang Jun
  * @Date: 2023-07-29 17:14:05
- * @LastEditTime: 2023-08-06 14:31:12
+ * @LastEditTime: 2023-08-10 14:45:16
  * @LastEditors: Wang Jun
  * @Description:
  */
@@ -116,6 +116,8 @@ module.exports = [
                 ...Mock.mock({
                     "res|1-6": [{
                         "id": "@uuid",
+                        "fileName": 'SMILE_UVI_L1_PHOTON-LIST_20250101T0000_@date("yyyyMMddHHmmss")_V01.txt',
+                        "createdTime|": '@date("yyyy-MM-dd HH:mm:ss")',
                         "type|1": ["文件分发异常", "文件校验异常", "文件入库异常", "FTP异常", "CEP异常", "数据对比异常"],
                         "description": "文件上传失败：550-The process cannot access the file because it is being used by another process. \r\n Win32 error:   The process cannot access the file because it is being used by another process. \r\n Error details: File system returned an error.\r\n550 End\r\n",
                     }]

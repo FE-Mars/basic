@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-06 15:11:03
+ * @LastEditTime: 2023-08-11 11:20:19
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
@@ -16,7 +16,7 @@
                     :class="{ 'target-item': true, 'is-active': user.distUserId === active_item }"
                     @click="onClick(user.distUserId)"
                 >
-                    <Caution class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
+                    <Caution v-if="isErrorStatus(user.status)" class="error-tag" theme="filled" size="12" :fill="CssVariables.color_danger" />
                     <span class="text">{{ user.distUserName }}</span>
                     <el-tooltip :open-delay="300" content="下载清单" placement="top">
                         <a :href="`${VUE_APP_API_ROOT}/distList/download/${user.distUserId}`" :download="user.distUserName + '.json'" target="_blank" rel="下载清单" @click.stop>

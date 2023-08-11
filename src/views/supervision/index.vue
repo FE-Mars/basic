@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-06 15:22:28
+ * @LastEditTime: 2023-08-10 14:36:39
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -45,7 +45,7 @@
             </el-form>
         </page-header>
         <page-main>
-            <div v-if="list.length" class="list-wrap">
+            <div class="list-wrap">
                 <div class="list-header">
                     <h3 class="my-title">任务监督表</h3>
                     <el-upload action="supervisionTask/upload" accept="application/JSON" :limit="1" :show-file-list="false">
@@ -89,7 +89,6 @@
                     @current-change="onSearch({ pageIndex: $event })"
                 />
             </div>
-            <el-empty v-else description="暂无数据" />
         </page-main>
     </div>
 </template>
