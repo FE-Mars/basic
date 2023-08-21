@@ -43,7 +43,7 @@ export default {
     .content {
         color: #909399;
         font-size: 14px;
-        margin-top: 10px;
+        // margin-top: 10px;
         &:empty {
             display: none;
         }

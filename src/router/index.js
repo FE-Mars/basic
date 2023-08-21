@@ -9,23 +9,7 @@ Vue.use(VueRouter)
 import Layout from '@/layout'
 // import EmptyLayout from '@/layout/empty'
 
-const constantRoutes = [
-    {
-        path: '/',
-        component: Layout,
-        redirect: '/dashboard',
-        children: [
-            {
-                path: 'dashboard',
-                name: 'dashboard',
-                component: () => import('@/views/index'),
-                meta: {
-                    title: store.state.settings.dashboardTitle
-                }
-            }
-        ]
-    }
-]
+const constantRoutes = []
 
 // import MultilevelMenuExample from './modules/multilevel.menu.example'
 // import BreadcrumbExample from './modules/breadcrumb.example'
@@ -44,7 +28,7 @@ let asyncRoutes = [
                 redirect: '/task_supervision/index',
                 name: 'taskSupervision',
                 meta: {
-                    title: '任务监督',
+                    title: '质量检验任务监管',
                     icon: 'fenfa'
                 },
                 children: [
@@ -61,23 +45,23 @@ let asyncRoutes = [
                 ]
             },
             {
-                path: '/task_distribution',
+                path: '/quality_verification_rules',
                 component: Layout,
-                redirect: '/task_distribution/index',
-                name: 'taskDistribution',
+                redirect: '/quality_verification_rules/index',
+                name: 'QualityVerificationRules',
                 meta: {
-                    title: '分发任务管理',
+                    title: '质量检验规则',
                     icon: 'renwujianguan'
                 },
                 children: [
                     {
                         path: 'index',
-                        name: 'taskDistributionIndex',
-                        component: () => import(/* webpackChunkName: 'distribution' */ '@/views/distribution'),
+                        name: 'QualityVerificationRulesIndex',
+                        component: () => import(/* webpackChunkName: 'quality_verification_rules' */ '@/views/quality_verification_rules'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution'
+                            activeMenu: '/quality_verification_rules'
                         }
                     }
                 ]
@@ -88,7 +72,7 @@ let asyncRoutes = [
                 redirect: '/task_distribution_list/index',
                 name: 'taskDistributionList',
                 meta: {
-                    title: '分发清单管理',
+                    title: '数据对比规则',
                     icon: 'renwuqingdan'
                 },
                 children: [
