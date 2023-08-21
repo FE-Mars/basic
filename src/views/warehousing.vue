@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-08 19:39:08
+ * @LastEditTime: 2023-08-21 17:00:33
  * @LastEditors: Wang Jun
  * @Description: 入库任务
 -->
@@ -20,6 +20,7 @@
                     <el-date-picker
                         v-model="filters.takeTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -47,7 +48,7 @@
                             <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/warehouseTaskManage/downLoad/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
-                            <el-link :underline="false" type="primary" @click="onReWarehousing(scope.$index, scope.row)">
+                            <el-link :underline="false" type="primary" @click="onReWarehousing(scope.row.id)">
                                 <refresh-one theme="filled" size="14" :fill="CssVariables.color_primary" /> 重新入库
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
@@ -133,9 +134,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.post('warehouseTaskManage/againWarehouseTask', {
-                    ids: Array.isArray(ids) ? ids : [ids]
-                }).then(() => {
+                api.post('warehouseTaskManage/againWarehouseTask', Array.isArray(ids) ? ids : [ids]).then(() => {
                     this.$message({
                         type: 'success',
                         message: '重新入库成功!'
@@ -161,7 +160,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 api.delete('warehouseTaskManage/delete', {
-                    data: { ids: Array.isArray(ids) ? ids : [ids] }
+                    data: Array.isArray(ids) ? ids : [ids]
                 }).then(() => {
                     this.$message({
                         type: 'success',

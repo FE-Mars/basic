@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-09 20:06:30
+ * @LastEditTime: 2023-08-21 17:00:25
  * @LastEditors: Wang Jun
  * @Description: 出库监管
 -->
@@ -35,6 +35,7 @@
                     <el-date-picker
                         v-model="filters.dateTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                     />
                 </el-form-item>

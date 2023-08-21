@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-08 19:57:58
+ * @LastEditTime: 2023-08-21 17:00:12
  * @LastEditors: Wang Jun
  * @Description: 出库清单
 -->
@@ -21,6 +21,7 @@
                     <el-date-picker
                         v-model="filters.takeTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -119,13 +120,13 @@ export default {
                     confirmButtonText: '知道了',
                 })
             }
-            this.$confirm('此操作将永久删除任务, 是否继续?', '提示', {
+            this.$confirm('此操作将永久删除数据, 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
                 api.delete('outWarehouseTaskManage/delete', {
-                    data: { ids: Array.isArray(ids) ? ids : [ids] }
+                    data: Array.isArray(ids) ? ids : [ids]
                 }).then(() => {
                     this.$message({
                         type: 'success',

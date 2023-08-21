@@ -173,7 +173,7 @@ export default {
             })
         },
         fetchStatisticsRecentForDays() {   // 查询最近几天的数据
-            return api.get(`askInfoStatistics/warehouseTaskDays/${this.day_count}`).then(({data}) => {
+            return api.get(`taskInfoStatistics/warehouseTaskDays/${this.day_count}`).then(({data}) => {
                 const category = [], success = [], failed = []
                 data.forEach(item => {
                     category.push(item.date)

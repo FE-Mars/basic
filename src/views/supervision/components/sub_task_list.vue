@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-06 00:47:15
- * @LastEditTime: 2023-08-09 17:38:06
+ * @LastEditTime: 2023-08-21 16:38:42
  * @LastEditors: Wang Jun
  * @Description: 子任务列表
 -->
@@ -20,7 +20,7 @@
                             <el-descriptions-item label="结束时间">{{ item.endTime }}</el-descriptions-item>
                         </el-descriptions>
                         <el-tooltip :open-delay="300" content="下载文件" placement="top">
-                            <a :href="`${VUE_APP_API_ROOT}/warehouseTaskMonitor/downLoad/${item.taskId}`" download target="_blank" rel="下载任文件" @click.stop>
+                            <a :href="`${VUE_APP_API_ROOT}/warehouseTaskMonitor/downLoad/${item.taskId}`" :download="item.taskId + '.json'" target="_blank" @click.stop>
                                 <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
                             </a>
                         </el-tooltip>

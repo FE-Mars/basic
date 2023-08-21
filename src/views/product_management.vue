@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 15:00:23
- * @LastEditTime: 2023-08-08 19:34:17
+ * @LastEditTime: 2023-08-21 17:04:52
  * @LastEditors: Wang Jun
  * @Description: 产品管理
 -->
@@ -66,10 +66,10 @@
                         <el-button type="danger" @click="onDelete(selections)"><delete-five theme="filled" size="12" /> 删除</el-button>
                     </template>
                 </div>
-                <el-table :data="[]" @selection-change="onSelectionChange">
-                    <el-table-column prop="name" label="文件名称" />
-                    <el-table-column prop="load" label="载荷" />
-                    <el-table-column prop="type" label="产品类型" />
+                <el-table :data="list" @selection-change="onSelectionChange">
+                    <el-table-column prop="fileName" label="文件名称" width="500px" />
+                    <el-table-column prop="payload" label="载荷" />
+                    <el-table-column prop="level" label="产品类型" />
                     <el-table-column prop="version" label="版本" />
                     <el-table-column prop="createdTime" label="入库时间" />
                     <el-table-column label="操作">
@@ -167,7 +167,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 api.delete('productManage/delete', {
-                    data: { ids: Array.isArray(ids) ? ids : [ids] }
+                    data: Array.isArray(ids) ? ids : [ids]
                 }).then(() => {
                     this.$message({
                         type: 'success',
@@ -226,6 +226,13 @@ export default {
             padding: 0 0 10px 0;
             .content {
                 margin-top: 0;
+            }
+        }
+        .el-link {
+            margin-right: 12px;
+            font-size: 12px;
+            &:last-child {
+                margin-right: 0;
             }
         }
     }
