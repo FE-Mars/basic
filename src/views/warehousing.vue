@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-21 17:00:33
+ * @LastEditTime: 2023-08-21 19:23:02
  * @LastEditors: Wang Jun
  * @Description: 入库任务
 -->
@@ -134,10 +134,10 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.post('warehouseTaskManage/againWarehouseTask', Array.isArray(ids) ? ids : [ids]).then(() => {
+                api.post('warehouseTaskManage/againWarehouseTask', Array.isArray(ids) ? ids : [ids]).then(({ data }) => {
                     this.$message({
                         type: 'success',
-                        message: '重新入库成功!'
+                        message: data
                     })
                     this.onSearch()
                 }).catch(() => {
