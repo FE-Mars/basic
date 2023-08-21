@@ -202,13 +202,12 @@ export default {
             this.fetchAbnormalListTimer && clearTimeout(this.fetchAbnormalListTimer)  // 清除定时器
             return api.post("/errorEvent/searchByCondition", {
                 limit: this.error_event_limit
-            }).then(({ data = [] }) => {
-                console.log(data)
-                this.abnormal_list = data.map(item => {
+            }).then(({ res = [] }) => {
+                this.abnormal_list = res.map(item => {
                     item.description = item.description.split('\n').map(line => {
                         return `<p style="margin: 4px 0;">${line}</p>`
                     }).join('')
-                    console.log(item.description)
+                    item.fileName = item.fileName || '--'
                     return item
                 })
                 this.current_scroll_index = 9

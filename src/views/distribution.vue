@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-06 16:07:30
+ * @LastEditTime: 2023-08-21 19:50:09
  * @LastEditors: Wang Jun
  * @Description: 任务分发
 -->
@@ -20,6 +20,7 @@
                     <el-date-picker
                         v-model="filters.createdTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -47,7 +48,7 @@
                             <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/taskInfo/download/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
-                            <el-link :underline="false" type="primary" @click="onRedistribution(scope.$index, scope.row)">
+                            <el-link :underline="false" type="primary" @click="onRedistribution(scope.row.id)">
                                 <refresh-one theme="filled" size="14" :fill="CssVariables.color_primary" /> 重分
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
@@ -135,10 +136,10 @@ export default {
             }).then(() => {
                 api.get('taskInfo/reDist', {
                     params: { ids: Array.isArray(ids) ? ids.join(',') : ids }
-                }).then(() => {
+                }).then(({ res }) => {
                     this.$message({
                         type: 'success',
-                        message: '重新分发成功!'
+                        message: res
                     })
                     this.onSearch()
                 }).catch(() => {
@@ -165,7 +166,7 @@ export default {
                 }).then(() => {
                     this.$message({
                         type: 'success',
-                        message: '删除成功!'
+                        message: '删除成功'
                     })
                     this.onSearch()
                 }).catch(() => {

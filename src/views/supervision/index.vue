@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-10 14:36:39
+ * @LastEditTime: 2023-08-21 19:36:07
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -35,6 +35,7 @@
                     <el-date-picker
                         v-model="filters.startTime"
                         type="date"
+                        value-format="yyyy-MM-dd"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -159,7 +160,7 @@ export default {
                     size: this.pageSize
                 }
             }).then(({ res }) => {
-                this.list = res.list
+                this.list = res.data
                 this.pageIndex = res.page
                 this.pageSize = res.size
                 this.total = res.total
