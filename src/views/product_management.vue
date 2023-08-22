@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 15:00:23
- * @LastEditTime: 2023-08-22 11:10:52
+ * @LastEditTime: 2023-08-22 14:51:23
  * @LastEditors: Wang Jun
  * @Description: 产品管理
 -->
@@ -13,9 +13,12 @@
             </header>
             <el-scrollbar>
                 <ul class="type-list">
-                    <li class="type-item">全部类型</li>
-                    <li v-for="i in 10" :key="i" class="type-item">
-                        Lorem, ipsum.
+                    <li v-for="item in types"
+                        :key="item.id"
+                        :class="{'type-item': true, 'is-active': filters.level == item.value}"
+                        @click="onChangeType(item.value)"
+                    >
+                        {{ item.label }}
                     </li>
                 </ul>
             </el-scrollbar>
@@ -116,11 +119,13 @@ export default {
             pageSize: 15,
             total: 0,
             selections: [],
-            list: []
+            list: [],
+            types: []
         }
     },
     created() {
         this.onSearch()
+        this.fetchTypes()
     },
     methods: {
         getDefaultFilters() {
@@ -128,7 +133,24 @@ export default {
                 fileName: "",
                 payload: "",
                 dateTime: null,
+                level: ""
             }
+        },
+        fetchTypes() {
+            api.get("productManage/productType").then(({ data = [] }) => {
+                let result = [{ label: '全部类型', value: '' }]
+                data.forEach(item => {
+                    result.push({
+                        label: item.typeName,
+                        value: item.typeName
+                    })
+                })
+                this.types = result
+            })
+        },
+        onChangeType(type) {
+            this.filters.level = type
+            this.onSearch()
         },
         onSearch(options) {
             const { pageSize = this.pageSize, pageIndex = 1 } = options || {}
@@ -200,6 +222,9 @@ export default {
             padding: 0 20px;
             border-bottom: 1px solid #ebeef5;
             font-size: 16px;
+        }
+        .el-scrollbar {
+            flex: 1;
         }
         .type-list {
             list-style: none;
