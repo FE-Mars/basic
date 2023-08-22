@@ -113,24 +113,47 @@ let asyncRoutes = [
                 ]
             },
             {
-                path: '/ex-warehouse_management',
+                path: '/ex-warehousing_management',
                 component: Layout,
-                redirect: '/ex-warehouse_management/index',
-                name: 'exWarehouseManagement',
+                redirect: '/ex-warehousing_management/index',
+                name: 'exWarehousingManagement',
                 meta: {
-                    title: '出库清单管理',
+                    title: '出库任务管理',
                     icon: 'outbound',
                     active_icon: 'outbound-active'
                 },
                 children: [
                     {
                         path: 'index',
-                        name: 'exWarehouseManagementIndex',
-                        component: () => import(/* webpackChunkName: 'ex-warehouse_management' */ '@/views/ex-warehouse'),
+                        name: 'exWarehousingManagementIndex',
+                        component: () => import(/* webpackChunkName: 'ex-warehousing_management' */ '@/views/ex-warehouse'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/ex-warehouse_management'
+                            activeMenu: '/ex-warehousing_management'
+                        }
+                    }
+                ]
+            },
+            {
+                path: '/ex-warehouse-list_management',
+                component: Layout,
+                redirect: '/ex-warehouse-list_management/index',
+                name: 'exWarehouseManagement',
+                meta: {
+                    title: '出库清单管理',
+                    icon: 'transaction-order',
+                    active_icon: 'transaction-order-active'
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'exWarehouseManagementIndex',
+                        component: () => import(/* webpackChunkName: 'ex-warehouse-list_management' */ '@/views/ex-warehouse-list'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/ex-warehouse-list_management'
                         }
                     }
                 ]

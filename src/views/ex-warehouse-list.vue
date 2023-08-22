@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-22 11:26:21
+ * @LastEditTime: 2023-08-22 11:27:07
  * @LastEditors: Wang Jun
  * @Description: 出库清单
 -->
@@ -34,7 +34,7 @@
         <page-main>
             <div class="list-wrap">
                 <div class="list-header">
-                    <h3 class="my-title">出库任务表</h3>
+                    <h3 class="my-title">出库清单表</h3>
                     <template v-if="selections && selections.length">
                         <el-button type="danger" @click="onDelete(selections)"><delete-five theme="filled" size="12" /> 删除</el-button>
                     </template>
@@ -42,10 +42,10 @@
                 <el-table :data="list" @selection-change="onSelectionChange">
                     <el-table-column type="selection" width="55" />
                     <el-table-column prop="taskId" label="全局任务编号" />
-                    <el-table-column prop="taskCreatedTime" label="任务时间" />
+                    <el-table-column prop="taskTime" label="任务时间" />
                     <el-table-column label="操作" width="250px">
                         <template slot-scope="scope">
-                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/outWarehouseTaskManage/downLoad/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
+                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/outWarehouseListManage/downLoad/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
@@ -125,7 +125,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.delete('outWarehouseTaskManage/delete', {
+                api.delete('outWarehouseListManage/delete', {
                     data: Array.isArray(ids) ? ids : [ids]
                 }).then(() => {
                     this.$message({
@@ -146,7 +146,7 @@ export default {
         },
         fetchData() {
             this.selections = []   // 置空已选
-            api.post('outWarehouseTaskManage/list', {
+            api.post('outWarehouseListManage/list', {
                 ...this.filters,
                 pageNum: this.pageIndex,
                 rows: this.pageSize
