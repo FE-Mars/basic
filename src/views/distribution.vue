@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-21 19:50:09
+ * @LastEditTime: 2023-08-22 11:35:01
  * @LastEditors: Wang Jun
  * @Description: 任务分发
 -->
@@ -20,7 +20,7 @@
                     <el-date-picker
                         v-model="filters.createdTime"
                         type="date"
-                        value-format="yyyy-MM-dd"
+                        value-format="yyyy-MM-dd 00:00:00"
                         placeholder="选择日期"
                     />
                 </el-form-item>
@@ -134,8 +134,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.get('taskInfo/reDist', {
-                    params: { ids: Array.isArray(ids) ? ids.join(',') : ids }
+                api.post('taskInfo/reDist', {
+                    ids: Array.isArray(ids) ? ids : [ids]
                 }).then(({ res }) => {
                     this.$message({
                         type: 'success',
@@ -161,8 +161,8 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                api.delete('taskInfo', {
-                    data: { ids: Array.isArray(ids) ? ids.join(',') : ids }
+                api.post('taskInfo', {
+                    ids: Array.isArray(ids) ? ids : [ids]
                 }).then(() => {
                     this.$message({
                         type: 'success',
