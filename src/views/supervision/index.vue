@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-10 14:36:39
+ * @LastEditTime: 2023-08-22 15:52:50
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -11,14 +11,14 @@
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="全局任务编号">
                     <el-input
-                        v-model="filters.subTaskCode"
+                        v-model="filters.taskId"
                         placeholder="全局任务编号"
                         clearable
                     />
                 </el-form-item>
                 <el-form-item label="任务执行状态">
                     <el-select
-                        v-model="filters.status"
+                        v-model="filters.taskStatus"
                         placeholder="任务执行状态"
                         clearable
                         style="width: 200px;"
@@ -31,7 +31,7 @@
                         />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="分发时间">
+                <el-form-item label="开始时间">
                     <el-date-picker
                         v-model="filters.startTime"
                         type="date"
@@ -48,29 +48,18 @@
             <div class="list-wrap">
                 <div class="list-header">
                     <h3 class="my-title">任务监督表</h3>
-                    <el-upload action="supervisionTask/upload" accept="application/JSON" :limit="1" :show-file-list="false">
+                    <el-upload action="qualityCheck/uploadFile" accept="application/JSON" :limit="1" :show-file-list="false">
                         <el-button type="primary">手动导入<i class="el-icon-upload el-icon--right" /></el-button>
                     </el-upload>
                 </div>
-                <el-table ref="table" :data="list" row-key="mainTaskCode" @expand-change="onExpandChange" @row-click="onClickRow">
+                <el-table ref="table" :data="list" row-key="taskId" @expand-change="onExpandChange" @row-click="onClickRow">
                     <el-table-column type="expand">
                         <template slot-scope="props">
-                            <SubTaskList :key="'sub_task_' + props.row.mainTaskCode" :main-task-code="props.row.mainTaskCode" />
+                            <expand-detail :row="props.row" />
                         </template>
                     </el-table-column>
-                    <el-table-column prop="mainTaskCode" label="全局任务编号" width="350px" />
-                    <el-table-column prop="fileCount" label="文件总数" />
-                    <el-table-column prop="succeedDistCount" label="成功数">
-                        <template slot-scope="scope">
-                            <span class="is-success">{{ scope.row.succeedDistCount }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="failedDistCount" label="失败数">
-                        <template slot-scope="scope">
-                            <span class="is-fail">{{ scope.row.failedDistCount }}</span>
-                        </template>
-                    </el-table-column>
-                    <el-table-column prop="status" label="任务状态">
+                    <el-table-column prop="taskId" label="全局任务编号" width="350px" />
+                    <el-table-column prop="taskStatus" label="任务状态">
                         <template slot-scope="scope">
                             <span :class="`status${scope.row.status}`">{{ scope.row.status | statusFilter }}</span>
                         </template>
@@ -95,7 +84,7 @@
 
 <script>
 import api from '@/api'
-import SubTaskList from './components/sub_task_list.vue'
+import ExpandDetail from './components/expand_detail.vue'
 const STATUS = [
     { label: "执行中", value: 1 },
     { label: "执行完成", value: 2 },
@@ -105,7 +94,7 @@ const STATUS = [
     { label: "执行完成部分异常", value: 6 },
 ]
 export default {
-    components: {SubTaskList},
+    components: { ExpandDetail },
     filters: {
         statusFilter(status) {
             return STATUS.find(item => item.value === status)?.label || status
@@ -131,8 +120,8 @@ export default {
     methods: {
         getDefaultFilters() {
             return {
-                subTaskCode: "",
-                status: null,
+                taskId: "",
+                taskStatus: null,
                 startTime: null,
             }
         },
@@ -152,26 +141,23 @@ export default {
         },
         fetchData() {
             this.expanded_rows = {}  // 清空已展开的行
-            return api.post("/supervisionTask/page/mainTask", {
+            return api.post("qualityCheck/list", {
                 data: this.filters,
                 pageRequest: {
                     page: this.pageIndex,
                     size: this.pageSize
                 }
             }).then(({ res }) => {
-                this.list = res.list
-                this.pageIndex = res.page
-                this.pageSize = res.size
+                this.list = res.data
                 this.total = res.total
             })
         },
         onExpandChange(row) {
-            if (this.expands.includes(row.mainTaskCode)) {
+            if (this.expands.includes(row.taskId)) {
                 this.expands = []
             } else {
-                this.expands = [row.mainTaskCode]
+                this.expands = [row.taskId]
             }
-            // this.$set(this.expanded_rows, row.mainTaskCode, true) // 记录已经展开的行
         },
         onClickRow(row) {
             this.$refs.table.toggleRowExpansion(row)

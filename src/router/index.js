@@ -9,7 +9,12 @@ Vue.use(VueRouter)
 import Layout from '@/layout'
 // import EmptyLayout from '@/layout/empty'
 
-const constantRoutes = []
+const constantRoutes = [
+    {
+        path: '/',
+        redirect: '/task_supervision',
+    }
+]
 
 // import MultilevelMenuExample from './modules/multilevel.menu.example'
 // import BreadcrumbExample from './modules/breadcrumb.example'
