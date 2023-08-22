@@ -104,6 +104,7 @@ export default {
     },
     beforeDestroy() {
         this.timer && clearTimeout(this.timer)
+        this.fetchAbnormalListTimer && clearTimeout(this.fetchAbnormalListTimer)  // 清除定时器
         window.removeEventListener('resize', this.resizeChart)
         this.my_chart?.dispose()
     },
