@@ -132,7 +132,10 @@ export default {
                 xAxis: {
                     type: 'category',
                     // boundaryGap: false,
-                    data: []
+                    data: [],
+                    axisTick: {
+                        alignWithLabel: true
+                    }
                 },
                 yAxis: {
                     type: 'value'
