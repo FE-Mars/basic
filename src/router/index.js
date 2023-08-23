@@ -91,6 +91,52 @@ let asyncRoutes = [
                     }
                 ]
             },
+            {
+                path: '/verification_report',
+                component: Layout,
+                redirect: '/verification_report/index',
+                name: 'VerificationReport',
+                meta: {
+                    title: '数据质量检验报告',
+                    icon: 'table-report',
+                    active_icon: 'table-report-active',
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'VerificationReportIndex',
+                        component: () => import(/* webpackChunkName: 'verification_report' */ '@/views/report'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/verification_report'
+                        }
+                    }
+                ]
+            },
+            {
+                path: '/comparison_result',
+                component: Layout,
+                redirect: '/comparison_result/index',
+                name: 'ComparisonResult',
+                meta: {
+                    title: '数据对比结果',
+                    icon: 'data-arrival',
+                    active_icon: 'data-arrival-active',
+                },
+                children: [
+                    {
+                        path: 'index',
+                        name: 'ComparisonResultIndex',
+                        component: () => import(/* webpackChunkName: 'Comparison_result' */ '@/views/result'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/comparison_result'
+                        }
+                    }
+                ]
+            },
         ]
     }
 ]

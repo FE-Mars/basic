@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-23 17:51:50
+ * @LastEditTime: 2023-08-23 18:29:00
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -149,7 +149,7 @@ export default {
                 }
             }).then(({ res }) => {
                 this.list = res.data
-                this.total = res.total
+                this.total = res.pageInfo.total
             })
         },
         onExpandChange(row) {
