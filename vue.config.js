@@ -57,12 +57,12 @@ module.exports = {
     productionSourceMap: false,
     devServer: {
         open: true,
-        // proxy: {
-        //     '/': {
-        //         target: process.env.VUE_APP_API_ROOT,
-        //         changeOrigin: true
-        //     }
-        // },
+        proxy: {
+            [process.env.VUE_APP_API_ROOT]: {
+                target: process.env.VUE_APP_API_PROXY,
+                changeOrigin: true
+            }
+        },
         // 用于 mock-server
         // proxy: {
         //     '/mock': {

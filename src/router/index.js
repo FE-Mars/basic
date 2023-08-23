@@ -50,9 +50,9 @@ let asyncRoutes = [
                 ]
             },
             {
-                path: '/quality_verification_rules',
+                path: '/verification_rules',
                 component: Layout,
-                redirect: '/quality_verification_rules/index',
+                redirect: '/verification_rules/index',
                 name: 'QualityVerificationRules',
                 meta: {
                     title: '质量检验规则',
@@ -62,37 +62,37 @@ let asyncRoutes = [
                     {
                         path: 'index',
                         name: 'QualityVerificationRulesIndex',
-                        component: () => import(/* webpackChunkName: 'quality_verification_rules' */ '@/views/quality_verification_rules'),
+                        component: () => import(/* webpackChunkName: 'verification_rules' */ '@/views/rules'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/quality_verification_rules'
+                            activeMenu: '/verification_rules'
                         }
                     }
                 ]
             },
             {
-                path: '/task_distribution_list',
+                path: '/comparison_rules',
                 component: Layout,
-                redirect: '/task_distribution_list/index',
-                name: 'taskDistributionList',
+                redirect: '/comparison_rules/index',
+                name: 'ComparisonRules',
                 meta: {
                     title: '数据对比规则',
-                    icon: 'renwuqingdan'
+                    icon: 'equal'
                 },
                 children: [
                     {
                         path: 'index',
-                        name: 'taskDistributionListIndex',
-                        component: () => import(/* webpackChunkName: 'distribution_list' */ '@/views/distribution_list'),
+                        name: 'ComparisonRulesIndex',
+                        component: () => import(/* webpackChunkName: 'Comparison_rules' */ '@/views/rules'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution_list'
+                            activeMenu: '/comparison_rules'
                         }
                     }
                 ]
-            }
+            },
         ]
     }
 ]

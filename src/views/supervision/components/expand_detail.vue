@@ -1,15 +1,17 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-22 16:09:32
+ * @LastEditTime: 2023-08-23 15:31:22
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
 <template>
-    <div v-if="!disabled" class="expand-detail">
+    <div v-loading="is_loading" class="expand-detail">
         <div class="info-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
             <h3 class="my-title">校验文件</h3>
+            <div class="value">{{ info.checkFile || '--' }}</div>
             <h3 class="my-title" style="margin-top: 40px;">校验结果</h3>
+            <div class="value">{{ info.checkResult || '--' }}</div>
         </div>
         <transition name="el-fade-in-linear">
             <div v-show="!is_fold" class="abnormal-wrap">
@@ -53,30 +55,33 @@ export default {
         return {
             VUE_APP_API_ROOT: process.env.VUE_APP_API_ROOT,
             CssVariables,
-            info: null,
+            info: {},
+            is_loading: true,
             is_fold: false,
             error_events: []  // 异常事件
         }
     },
     created() {
-        this.fetchInfo()
-        this.fetchErrorEvent()
+        this.is_loading = true
+        Promise.all([this.fetchInfo(), this.fetchErrorEvent()]).finally(() => {
+            this.is_loading = false
+        })
     },
     methods: {
         isErrorStatus(status) {
             return [3, 4, 6].includes(status)
         },
         fetchInfo() {
-            api.get(`qualityCheck/info/${this.row.id}`).then(({ res }) => {
+            return api.get(`qualityCheck/info/${this.row.id}`).then(({ res }) => {
                 this.info = res
             })
         },
         fetchErrorEvent() {
             if (!this.isErrorStatus(this.row.taskStatus)) {  // 没有异常 不查询
                 this.error_events = []
-                return
+                return Promise.resolve()
             }
-            api.get(`qualityCheck/errorInfo/${this.row.id}`).then(({ res }) => {
+            return api.get(`qualityCheck/errorInfo/${this.row.id}`).then(({ res }) => {
                 this.error_events = [res]
             })
         }
@@ -89,6 +94,7 @@ export default {
     display: flex;
     width: 100%;
     height: 100%;
+    min-height: 150px;
     padding: 20px;
     background-color: #fafafa;
     box-sizing: border-box;
@@ -104,8 +110,12 @@ export default {
     }
     .info-wrap {
         flex: 1;
-        margin: 0 20px;
+        margin-right: 20px;
         overflow: hidden;
+        .value {
+            padding-left: 12px;
+            color: #333;
+        }
     }
     .abnormal-wrap {
         width: 280px;

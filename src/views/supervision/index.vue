@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-22 15:52:50
+ * @LastEditTime: 2023-08-23 10:51:08
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -61,7 +61,7 @@
                     <el-table-column prop="taskId" label="全局任务编号" width="350px" />
                     <el-table-column prop="taskStatus" label="任务状态">
                         <template slot-scope="scope">
-                            <span :class="`status${scope.row.status}`">{{ scope.row.status | statusFilter }}</span>
+                            <span :class="`status${scope.row.taskStatus}`">{{ scope.row.taskStatus | statusFilter }}</span>
                         </template>
                     </el-table-column>
                     <el-table-column prop="startTime" label="开始时间" />
