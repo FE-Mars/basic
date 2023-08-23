@@ -16,9 +16,6 @@ const constantRoutes = [
     }
 ]
 
-// import MultilevelMenuExample from './modules/multilevel.menu.example'
-// import BreadcrumbExample from './modules/breadcrumb.example'
-
 // 当 children 不为空的主导航只有一项时，则隐藏
 let asyncRoutes = [
     {
@@ -78,7 +75,8 @@ let asyncRoutes = [
                 name: 'ComparisonRules',
                 meta: {
                     title: '数据对比规则',
-                    icon: 'equal'
+                    icon: 'equal',
+                    active_icon: 'equal-active'
                 },
                 children: [
                     {

@@ -41,6 +41,11 @@ import './mock'
 
 Vue.config.productionTip = false
 
+Vue.prototype.$custom_data = {
+    payload_options: ["SXI", "MAG", "UVI", "PLM"].map(item => ({ label: item, value: item })),
+    level_options: ["L0", "L1", "L2", "L3", "L4"].map(item => ({ label: item, value: item })),
+}
+
 Vue.prototype.$eventBus = new Vue({
     router,
     store,

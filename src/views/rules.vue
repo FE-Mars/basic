@@ -1,9 +1,9 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-11 11:41:58
- * @LastEditTime: 2023-08-23 17:10:06
+ * @LastEditTime: 2023-08-23 17:45:48
  * @LastEditors: Wang Jun
- * @Description: 质量校验规则
+ * @Description: 质量校验规则/数据对比规则
 -->
 <template>
     <div class="page-quality_verification_rules">
@@ -27,8 +27,8 @@
                 <div slot="header" class="card-header">{{ rule.ruleName }}</div>
                 <el-descriptions :column="2">
                     <el-descriptions-item label-class-name="my-label" label="载荷">{{ rule.payload }}</el-descriptions-item>
-                    <el-descriptions-item label-class-name="my-label" label="级别">{{ rule.level }}</el-descriptions-item>
-                    <el-descriptions-item label-class-name="my-label" label="规则描述">{{ rule.ruleDesc }}</el-descriptions-item>
+                    <el-descriptions-item label-class-name="my-label" label="级别">{{ rule.level || '--' }}</el-descriptions-item>
+                    <el-descriptions-item label-class-name="my-label" label="规则描述">{{ rule.ruleDesc || '--' }}</el-descriptions-item>
                 </el-descriptions>
                 <div class="card-footer">
                     <el-link type="primary" @click="onEdit(rule)"><edit theme="outline" size="12" :fill="CssVariables.color_primary" />编辑</el-link>
@@ -38,7 +38,7 @@
             </el-card>
         </page-main>
         <el-dialog
-            :title="`${edit_id ? '编辑' : '新增'}质量校验规则`"
+            :title="`${edit_id ? '编辑' : '新增'}${ruleType == '1' ? '质量校验' : '数据对比'}规则`"
             :close-on-click-modal="false"
             :visible.sync="dialog_visible"
             :before-close="onCloseDialog"
@@ -51,14 +51,14 @@
                     <el-col :span="12">
                         <el-form-item prop="payload" label="载荷标识">
                             <el-select v-model="form_model.payload" clearable placeholder="请选择载荷标识">
-                                <el-option v-for="item in payload_options" :key="item.value" :label="item.label" :value="item.value" />
+                                <el-option v-for="item in $custom_data.payload_options" :key="item.value" :label="item.label" :value="item.value" />
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item prop="level" label="产品级别">
                             <el-select v-model="form_model.level" clearable placeholder="请选择产品级别">
-                                <el-option v-for="item in level_options" :key="item.value" :label="item.label" :value="item.value" />
+                                <el-option v-for="item in $custom_data.level_options" :key="item.value" :label="item.label" :value="item.value" />
                             </el-select>
                         </el-form-item>
                     </el-col>
@@ -80,24 +80,14 @@ import { CodeOne, Edit, Delete } from '@icon-park/vue'
 import CssVariables from '@/assets/styles/resources/variables.scss'
 import CodeDialog from '@/components/CodeDialog/index.vue'
 
-const STATUS = [
-    { label: "执行中", value: 2 },
-    { label: "执行成功", value: 1 },
-    { label: "执行异常", value: 3 },
-    { label: "执行超时", value: 4 },
-]
-
-console.log(STATUS)
-
 export default {
     name: "QualityVerificationRules",
     components: { CodeOne, Edit, Delete, CodeDialog },
     data() {
         return {
             CssVariables,
+            ruleType: ~this.$route.path.indexOf('comparison_rules') ? 2 : 1,    // 1 质量校验规则  2 对比规则
             ruleName: '',
-            payload_options: ["SXI", "MAG", "UVI", "PLM"].map(item => ({ label: item, value: item })),
-            level_options: ["L0", "L1", "L2", "L3", "L4"].map(item => ({ label: item, value: item })),
             rules: [],
             dialog_visible: false,
             edit_id: '',
@@ -126,7 +116,7 @@ export default {
     },
     methods: {
         onSearch() {
-            this.$api.post('qualityCheck/search/1', {
+            this.$api.post(`qualityCheck/search/${this.ruleType}`, {
                 ruleName: this.ruleName
             }).then(({res}) => {
                 this.rules = res
@@ -190,7 +180,7 @@ export default {
         onSave(data) {
             return this.$api[data.id ? 'put' : 'post'](`qualityCheck/${data.id ? 'update' : 'add' }`, {
                 ...data,
-                ruleType: 1,    // 1 质量校验规则
+                ruleType: this.ruleType,
             }).then(() => {
                 this.$message({
                     type: 'success',

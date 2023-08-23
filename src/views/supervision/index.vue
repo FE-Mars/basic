@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-08-23 10:51:08
+ * @LastEditTime: 2023-08-23 17:51:50
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -86,12 +86,12 @@
 import api from '@/api'
 import ExpandDetail from './components/expand_detail.vue'
 const STATUS = [
-    { label: "执行中", value: 1 },
-    { label: "执行完成", value: 2 },
-    { label: "执行超时", value: 3 },
-    { label: "执行异常", value: 4 },
-    { label: "执行成功", value: 5 },
-    { label: "执行完成部分异常", value: 6 },
+    { label: "已结束", value: 0 },
+    { label: "已完成", value: 1 },
+    { label: "执行中", value: 2 },
+    { label: "执行异常", value: 3 },
+    { label: "执行超时", value: 4 },
+    { label: "未执行", value: 5 }
 ]
 export default {
     components: { ExpandDetail },

@@ -3,7 +3,7 @@
         <router-link v-if="!hasChildren" v-slot="{ href, navigate, isActive, isExactActive }" custom :to="resolvePath(item.path)">
             <a :href="isExternal(resolvePath(item.path)) ? resolvePath(item.path) : href" :class="[isActive && 'router-link-active', isExactActive && 'router-link-exact-active']" :target="isExternal(resolvePath(item.path)) ? '_blank' : '_self'" @click="navigate">
                 <el-menu-item :title="item.meta.title" :index="resolvePath(item.path)">
-                    <svg-icon v-if="item.meta.icon" :name="item.meta.icon" />
+                    <svg-icon v-if="getIcon(item, isActive)" :name="getIcon(item, isActive)" />
                     <span>{{ item.meta.title }}</span>
                 </el-menu-item>
             </a>
@@ -63,6 +63,10 @@ export default {
                 return this.basePath
             }
             return path.resolve(this.basePath, routePath)
+        },
+        getIcon(item, isActive) {
+            let icon = isActive ? item.meta.active_icon : item.meta.icon
+            return icon || item.meta.icon
         }
     }
 }
