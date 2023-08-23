@@ -1,25 +1,24 @@
 @import url('./resources/variables.scss');
 .is-success,
-.status1,
+.status2,
 .status5 {
     color: $color-success;
 }
 .is-fail,
-.status3 {
+.status4 {
     color: $color-danger;
 }
 .is-warning,
 .is-timeout,
-.status4 {
+.status3 {
     color: $color-warning;
 }
 .is-running,
-.status2 {
+.status1 {
     color: #5482ee;
 }
-.status0,
-.status5 {
-    color: $color-info;
+.status6 {
+    color: #f4a7f0;
 }
 .my-title {
     display: flex;
@@ -51,8 +50,13 @@
         }
     }
 }
-.el-form--inline {
-    .el-form-item {
-        margin-bottom: 0;
+// .el-form--inline {
+//     .el-form-item {
+//         margin-bottom: 0;
+//     }
+// }
+.header {
+    .content {
+        margin-bottom: -18px;
     }
 }

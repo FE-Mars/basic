@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-11 11:41:58
- * @LastEditTime: 2023-08-23 17:45:48
+ * @LastEditTime: 2023-08-23 18:34:18
  * @LastEditors: Wang Jun
  * @Description: 质量校验规则/数据对比规则
 -->
@@ -261,8 +261,8 @@ export default {
                 }
             }
         }
-        .el-form-item {
-            margin-bottom: 24px;
-        }
+        // .el-form-item {
+        //     margin-bottom: 24px;
+        // }
     }
 </style>
