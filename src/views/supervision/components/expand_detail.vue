@@ -1,14 +1,27 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-21 16:29:04
+ * @LastEditTime: 2023-08-23 19:44:46
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
 <template>
     <div class="expand-detail">
         <div class="file-list-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
-            <h3 class="my-title">{{ type === 1 ? '入库明细' : '出库明细' }}</h3>
+            <h3 class="my-title info-header">
+                <span class="title-text">{{ type === 1 ? '入库明细' : '出库明细' }}</span>
+                <label class="filter">
+                    文件状态：
+                    <el-select :value="fileStatus" placeholder="请选择" @change="onChangeFileStatus">
+                        <el-option
+                            v-for="item in fileStatusOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </label>
+            </h3>
             <el-table :data="detail_list" height="320px" highlight-current-row @current-change="onSelectedFile">
                 <el-table-column prop="fileName" label="文件名称" />
                 <el-table-column prop="status" label="状态">
@@ -84,7 +97,13 @@ export default {
             detail_list: [],
             is_fold: false,
             current_file: null,
-            error_events: []  // 异常事件
+            error_events: [],  // 异常事件
+            fileStatus: null,
+            fileStatusOptions: [
+                {label: '全部', value: null},
+                {label: '成功', value: 1},
+                {label: '失败', value: 0},
+            ]
         }
     },
     computed: {
@@ -99,7 +118,7 @@ export default {
         fetchDetailList() {   // 查询明细
             api.post(`${this.basePath}Info`, {
                 taskId: this.taskId,
-                fileStatus: null,
+                fileStatus: this.fileStatus,
                 pageNum: this.pageIndex,
                 rows: this.pageSize,
                 total: this.total  // 仅用于mock数据
@@ -119,6 +138,10 @@ export default {
                 if (id != this.current_file.id) return   // 防止请求过慢时，切换文件，导致数据错乱
                 this.error_events = Array.isArray(data) ? data : [data]
             })
+        },
+        onChangeFileStatus(value) {
+            this.fileStatus = value
+            this.onChangePageIndex(1)
         },
         onChangePageIndex(pageIndex) {
             this.pageIndex = pageIndex
@@ -238,6 +261,20 @@ export default {
         left: 8px;
         top: 50%;
         transform: translate(0, -50%);
+    }
+    .info-header {
+        display: flex;
+        .title-text {
+            flex: 1;
+        }
+        .filter {
+            font-weight: 500;
+            font-size: 12px;
+            color: $color-info;
+            .el-select {
+                width: 120px;
+            }
+        }
     }
 }
 </style>
