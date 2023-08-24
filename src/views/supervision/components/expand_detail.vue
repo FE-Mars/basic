@@ -1,13 +1,13 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-23 19:44:46
+ * @LastEditTime: 2023-08-24 16:34:30
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
 <template>
     <div class="expand-detail">
-        <div class="file-list-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
+        <div class="file-list-wrap" :class="{'is-fold': is_fold}">
             <h3 class="my-title info-header">
                 <span class="title-text">{{ type === 1 ? '入库明细' : '出库明细' }}</span>
                 <label class="filter">
@@ -226,6 +226,12 @@ export default {
         flex: 1;
         margin: 0 20px;
         overflow: hidden;
+        &.is-fold {
+            margin-right: 0;
+            .filter {
+                margin-right: 30px;
+            }
+        }
     }
     .abnormal-wrap {
         width: 280px;
@@ -247,7 +253,7 @@ export default {
     .unfold-abnormal {
         position: absolute;
         right: 20px;
-        top: 23px;
+        top: 27px;
     }
     .padding-left {
         position: relative;
