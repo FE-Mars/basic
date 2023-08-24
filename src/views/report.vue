@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-23 17:56:30
- * @LastEditTime: 2023-08-23 18:25:53
+ * @LastEditTime: 2023-08-24 15:21:13
  * @LastEditors: Wang Jun
  * @Description: 报告
 -->
@@ -137,7 +137,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 api.delete('qualityReport/delete', {
-                    data: Array.isArray(ids) ? ids.join(',') : ids
+                    data: Array.isArray(ids) ? ids.join(',') : ids + ''
                 }).then(() => {
                     this.$message({
                         type: 'success',
@@ -158,7 +158,7 @@ export default {
         fetchData() {
             this.selections = []   // 置空已选
             api.post('qualityReport/page', {
-                ...this.filters,
+                data: this.filters,
                 pageRequest: {
                     page: this.pageIndex,
                     size: this.pageSize

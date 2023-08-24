@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-23 17:56:30
- * @LastEditTime: 2023-08-23 18:20:47
+ * @LastEditTime: 2023-08-24 15:19:47
  * @LastEditors: Wang Jun
  * @Description: 对比结果页
 -->
@@ -159,7 +159,7 @@ export default {
         fetchData() {
             this.selections = []   // 置空已选
             api.post('dataCompare/result', {
-                ...this.filters,
+                data: this.filters,
                 pageRequest: {
                     page: this.pageIndex,
                     size: this.pageSize
