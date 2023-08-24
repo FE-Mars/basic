@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-22 11:12:17
+ * @LastEditTime: 2023-08-24 16:05:07
  * @LastEditors: Wang Jun
  * @Description: 出库监管
 -->
@@ -80,7 +80,7 @@
                     <el-table-column prop="endTime" label="结束时间" />
                     <el-table-column>
                         <el-tooltip slot-scope="scope" :open-delay="300" content="下载文件" placement="top">
-                            <a :href="`${VUE_APP_API_ROOT}/outWarehouseTaskMonitor/downLoad/${scope.row.taskId}`" download target="_blank" rel="下载任文件" @click.stop>
+                            <a :href="`${VUE_APP_API_ROOT}/outWarehouseTaskMonitor/downLoad/${scope.row.taskId}`" :download="`${scope.row.taskId}.json`" target="_blank" rel="下载任文件" @click.stop>
                                 <download-four theme="filled" size="16" :fill="CssVariables.color_success" />
                             </a>
                         </el-tooltip>
