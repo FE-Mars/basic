@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 15:00:23
- * @LastEditTime: 2023-08-22 14:51:23
+ * @LastEditTime: 2023-09-11 14:52:30
  * @LastEditors: Wang Jun
  * @Description: 产品管理
 -->
@@ -77,7 +77,7 @@
                     <el-table-column prop="createdTime" label="入库时间" />
                     <el-table-column label="操作">
                         <template slot-scope="scope">
-                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/productManage/downLoad/${scope.row.id}`" download target="_blank" rel="下载文件" @click.stop>
+                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/productManage/downLoad/${scope.row.id}`" :download="scope.row.fileName" target="_blank" rel="下载文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
