@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-08-11 11:20:19
+ * @LastEditTime: 2023-09-18 18:12:40
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
@@ -107,7 +107,7 @@ export default {
             pageIndex: 1,
             total: 0,
             file_list: [],
-            is_fold: false,
+            is_fold: true,
             current_file: null,
             error_events: []  // 异常事件
         }
@@ -145,11 +145,14 @@ export default {
                 this.file_list = res.data
                 this.total = res.pageInfo.total
                 this.current_file = null
+                this.is_fold = true
+                this.error_events = []
             })
         },
         fetchErrorEvent() {
             if (!this.isErrorStatus(this.current_file.status)) {  // 没有异常 不查询
                 this.error_events = []
+                this.is_fold = true
                 return
             }
             api.post('errorEvent/searchByCondition', {
@@ -157,6 +160,7 @@ export default {
                 limit: 10
             }).then(data => {
                 this.error_events = data.res
+                this.is_fold = !(data.res.length > 0)
             })
         },
         onChangePageIndex(pageIndex) {

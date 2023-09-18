@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-06 00:47:15
- * @LastEditTime: 2023-08-06 14:07:23
+ * @LastEditTime: 2023-09-18 18:34:58
  * @LastEditors: Wang Jun
  * @Description: 子任务列表
 -->
@@ -104,16 +104,17 @@ export default {
 </script>
 <style lang="scss">
     .sub-task-list {
-        margin: 8px 0;
+        margin: 8px 24px;
+        min-height: 50px;
         transition: height 0.3s;
         .el-collapse-item {
             .el-collapse-item__header {
-                flex-direction: row-reverse;
-                padding-left: 50px;
+                // flex-direction: row-reverse;
+                padding-left: 2px;
                 .sub-task-header {
                     display: flex;
                     align-items: center;
-                    padding: 0 24px;
+                    padding-right: 24px;
                 }
             }
         }

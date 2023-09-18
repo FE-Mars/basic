@@ -5,7 +5,8 @@
     color: $color-success;
 }
 .is-fail,
-.status4 {
+.status4,
+.status6 {
     color: $color-danger;
 }
 .is-warning,
@@ -17,8 +18,24 @@
 .status1 {
     color: #5482ee;
 }
-.status6 {
-    color: #f4a7f0;
+.bg-is-success,
+.bg-status2,
+.bg-status5 {
+    background-color: $color-success;
+}
+.bg-is-fail,
+.bg-status4,
+.bg-status6 {
+    background-color: $color-danger;
+}
+.bg-is-warning,
+.bg-is-timeout,
+.bg-status3 {
+    background-color: $color-warning;
+}
+.bg-is-running,
+.bg-status1 {
+    background-color: #5482ee;
 }
 .my-title {
     display: flex;

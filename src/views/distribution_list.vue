@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 16:16:15
- * @LastEditTime: 2023-08-22 11:31:56
+ * @LastEditTime: 2023-09-18 16:53:26
  * @LastEditors: Wang Jun
  * @Description: 分发清单
 -->
@@ -53,7 +53,7 @@
                     <el-table-column prop="createdTime" label="任务时间" />
                     <el-table-column label="操作" width="250px">
                         <template slot-scope="scope">
-                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/distList/download/${scope.row.id}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
+                            <el-link :underline="false" type="primary" :href="`${VUE_APP_API_ROOT}/distList/download/${scope.row.subTaskCode}/${scope.row.distUserId}`" :download="scope.row.subTaskCode + '.json'" target="_blank" rel="下载任务文件" @click.stop>
                                 <download-four theme="filled" size="14" :fill="CssVariables.color_success" /> 下载
                             </el-link>
                             <el-link :underline="false" type="primary" @click="onDelete(scope.row.id)">
