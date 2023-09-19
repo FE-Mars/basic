@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-09-18 19:01:55
+ * @LastEditTime: 2023-09-19 10:22:46
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -55,12 +55,12 @@
                 </div>
                 <template v-if="list.length">
                     <el-collapse v-model="activeNames">
-                        <el-collapse-item v-for="item in list" :key="item.mainTaskCode" title="一致性 Consistency" :name="item.mainTaskCode">
+                        <el-collapse-item v-for="item in list" :key="item.mainTaskCode" class="task-table-row-wrap" title="一致性 Consistency" :name="item.mainTaskCode">
                             <div slot="title" class="task-table-row">
                                 <el-tooltip effect="dark" :content="item.status | statusFilter" placement="top">
                                     <span :class="`status-item bg-status${item.status}`" />
                                 </el-tooltip>
-                                <el-descriptions :column="6" size="mini">
+                                <el-descriptions class="task-table-row-content" :column="6" size="mini">
                                     <el-descriptions-item :label="item.mainTaskCode" label-class-name="task-code" />
                                     <el-descriptions-item label="总数">{{ item.fileCount }}</el-descriptions-item>
                                     <el-descriptions-item label="成功" content-class-name="is-success">{{ item.succeedDistCount }}</el-descriptions-item>
@@ -165,12 +165,26 @@ export default {
 </script>
 <style lang="scss">
     .page-supervision {
+        .el-descriptions {
+            .el-descriptions__body,
+            .el-descriptions-row {
+                background-color: transparent;
+                .el-descriptions-item__cell {
+                    font-weight: 500;
+                }
+            }
+        }
         .status-item {
             display: block;
             width: 12px;
             height: 12px;
             border-radius: 50%;
             margin-right: 16px;
+        }
+        .task-table-row-wrap.is-active {
+            .task-table-row-content .el-descriptions-item__container {
+                color: #5482ee;
+            }
         }
         .task-table-row {
             display: flex;
@@ -191,6 +205,9 @@ export default {
                         padding: 0 24px;
                     }
                 }
+            }
+            .el-collapse-item__wrap {
+                background-color: #ebf5ff;
             }
             .el-descriptions {
                 margin-right: 20px;

@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-06 00:47:15
- * @LastEditTime: 2023-09-18 18:34:58
+ * @LastEditTime: 2023-09-19 10:06:06
  * @LastEditors: Wang Jun
  * @Description: 子任务列表
 -->
@@ -114,7 +114,10 @@ export default {
                 .sub-task-header {
                     display: flex;
                     align-items: center;
-                    padding-right: 24px;
+                    padding: 0 18px;
+                }
+                &.is-active {
+                    background-color: #ebf5ff;
                 }
             }
         }

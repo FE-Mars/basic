@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-30 11:36:38
- * @LastEditTime: 2023-09-18 18:12:40
+ * @LastEditTime: 2023-09-19 10:34:22
  * @LastEditors: Wang Jun
  * @Description:展开详情
 -->
@@ -28,7 +28,7 @@
         </div>
         <div class="file-list-wrap" :style="{'margin-right': is_fold ? 0 : '20px'}">
             <h3 class="my-title">分发明细</h3>
-            <el-table :data="file_list" height="320px" highlight-current-row @current-change="onSelectedFile">
+            <el-table :show-header="false" :data="file_list" height="320px" highlight-current-row @current-change="onSelectedFile">
                 <el-table-column prop="distFileName">
                     <template slot="header">
                         <span class="padding-left">文件名称</span>
@@ -194,7 +194,7 @@ export default {
     width: 100%;
     height: 100%;
     padding: 20px;
-    background-color: #fafafa;
+    background-color: #ebf5ff;
     box-sizing: border-box;
     overflow: hidden;
     .my-title {
@@ -207,10 +207,11 @@ export default {
         margin-right: 4px;
     }
     .target-list {
-        width: 300px;
+        width: 240px;
         margin-left: 0;
         border: 1px solid rgba(5, 5, 5, 0.06);
         border-radius: 8px;
+        overflow: hidden;
         .target-item {
             position: relative;
             padding: 12px 24px;
@@ -243,12 +244,42 @@ export default {
         }
     }
     .file-list-wrap {
+        position: relative;
         flex: 1;
         margin: 0 20px;
+        padding-left: 8px;
         overflow: hidden;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 2px;
+            height: 100%;
+            border-left: 1px dashed #7197f05e;
+        }
+        .my-title {
+            position: relative;
+            margin-left: -8px;
+            background-color: #ebf5ff;
+            z-index: 2;
+        }
     }
     .abnormal-wrap {
+        position: relative;
         width: 280px;
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 2px;
+            height: 100%;
+            border-left: 1px dashed #7197f05e;
+        }
+        .my-title {
+            position: relative;
+            background-color: #ebf5ff;
+            z-index: 2;
+        }
         .el-descriptions {
             margin-right: 0;
             .el-descriptions__body {
@@ -268,6 +299,7 @@ export default {
         position: absolute;
         right: 20px;
         top: 23px;
+        z-index: 3;
     }
     .padding-left {
         position: relative;
@@ -281,6 +313,21 @@ export default {
         left: 8px;
         top: 50%;
         transform: translate(0, -50%);
+    }
+    .el-table {
+        background-color: transparent;
+        tr {
+            cursor: pointer;
+            background-color: transparent;
+            &.current-row {
+                color: #5482ee;
+            }
+            &:hover {
+                >td.el-table__cell {
+                    background-color: transparent;
+                }
+            }
+        }
     }
 }
 </style>
