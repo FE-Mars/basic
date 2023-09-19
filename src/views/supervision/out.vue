@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-08-24 16:05:07
+ * @LastEditTime: 2023-09-19 15:26:23
  * @LastEditors: Wang Jun
  * @Description: 出库监管
 -->
@@ -49,7 +49,7 @@
             <div class="list-wrap">
                 <div class="list-header">
                     <h3 class="my-title">出库任务表</h3>
-                    <el-upload action="outWarehouseTaskMonitor/upLoadFile" accept="application/JSON" :limit="1" :show-file-list="false">
+                    <el-upload ref="upload" :action="`${VUE_APP_API_ROOT}outWarehouseTaskMonitor/upLoadFile`" accept="application/JSON" :limit="1" :show-file-list="false" :on-success="onUploadSuccess">
                         <el-button type="primary">手动出库<i class="el-icon-upload el-icon--right" /></el-button>
                     </el-upload>
                 </div>
@@ -145,6 +145,11 @@ export default {
                 status: null,
                 dateTime: null,
             }
+        },
+        onUploadSuccess() {
+            this.$alert('导入成功', { type: 'success' })
+            this.$refs.upload.clearFiles()
+            this.onReset()
         },
         onReset() {
             this.filters = this.getDefaultFilters()
