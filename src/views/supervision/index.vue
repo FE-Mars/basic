@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-07-28 14:59:18
- * @LastEditTime: 2023-09-19 15:21:18
+ * @LastEditTime: 2023-10-24 16:25:14
  * @LastEditors: Wang Jun
  * @Description: 任务监督页面
 -->
@@ -48,7 +48,7 @@
             <div class="list-wrap">
                 <div class="list-header">
                     <h3 class="my-title">任务监督表</h3>
-                    <el-upload ref="upload" :action="`${VUE_APP_API_ROOT}qualityCheck/uploadFile`" accept="application/JSON" :limit="1" :show-file-list="false" :on-success="onUploadSuccess">
+                    <el-upload ref="upload" :action="`${VUE_APP_API_ROOT}/qualityCheck/uploadFile`" accept="application/JSON" :limit="1" :show-file-list="false" :on-success="onUploadSuccess">
                         <el-button type="primary">手动导入<i class="el-icon-upload el-icon--right" /></el-button>
                     </el-upload>
                 </div>
