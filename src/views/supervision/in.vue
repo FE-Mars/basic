@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-09-19 15:24:59
+ * @LastEditTime: 2023-10-24 16:26:47
  * @LastEditors: Wang Jun
  * @Description: 入库监管
 -->
@@ -49,7 +49,7 @@
             <div class="list-wrap">
                 <div class="list-header">
                     <h3 class="my-title">入库任务表</h3>
-                    <el-upload ref="upload" :action="`${VUE_APP_API_ROOT}warehouseTaskMonitor/uploadFile`" accept="application/JSON" :limit="1" :show-file-list="false" :on-success="onUploadSuccess">
+                    <el-upload ref="upload" :action="`${VUE_APP_API_ROOT}/warehouseTaskMonitor/uploadFile`" accept="application/JSON" :limit="1" :show-file-list="false" :on-success="onUploadSuccess">
                         <el-button type="primary">手动入库<i class="el-icon-upload el-icon--right" /></el-button>
                     </el-upload>
                 </div>
