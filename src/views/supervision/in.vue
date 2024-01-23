@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-05 14:58:14
- * @LastEditTime: 2023-10-24 16:26:47
+ * @LastEditTime: 2023-10-24 16:58:15
  * @LastEditors: Wang Jun
  * @Description: 入库监管
 -->
@@ -136,10 +136,14 @@ export default {
                 dateTime: null,
             }
         },
-        onUploadSuccess() {
-            this.$alert('导入成功', { type: 'success' })
-            this.$refs.upload.clearFiles()
-            this.onReset()
+        onUploadSuccess(res) {
+            if (res.code == '200') {
+                this.$alert(res.data, { type: 'success'})
+                this.$refs.upload.clearFiles()
+                this.onReset()
+            } else {
+                this.$alert(res.data, { type: 'error'})
+            }
         },
         onReset() {
             this.filters = this.getDefaultFilters()
