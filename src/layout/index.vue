@@ -22,7 +22,6 @@
                             </template>
                         </div>
                     </div>
-                    <UserMenu />
                 </div>
             </header>
             <div class="wrapper">
@@ -96,7 +95,6 @@
 <script>
 import variables from '@/assets/styles/resources/variables.scss'
 import Logo from './components/Logo'
-import UserMenu from './components/UserMenu'
 import SidebarItem from './components/SidebarItem'
 import Topbar from './components/Topbar'
 import Search from './components/Search'
@@ -109,8 +107,7 @@ export default {
         Search,
         SidebarItem,
         Topbar,
-        ThemeSetting,
-        UserMenu
+        ThemeSetting
     },
     provide() {
         return {
