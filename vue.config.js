@@ -58,9 +58,13 @@ module.exports = {
     devServer: {
         open: true,
         proxy: {
-            '/dist/api': {
+            '/proxy': {
                 target: process.env.VUE_APP_API_PROXY,
-                changeOrigin: true
+                changeOrigin: true,
+                pathRewrite: (path) => {
+                    console.log(path)
+                    return path.replace(/^\/proxy/, '')
+                }
             }
         },
         // 用于 mock-server
@@ -111,10 +115,6 @@ module.exports = {
         }
     },
     pluginOptions: {
-        lintStyleOnBuild: true,
-        stylelint: {
-            fix: true
-        },
         mock: {
             entry: './src/mock/server.js',
             debug: true,

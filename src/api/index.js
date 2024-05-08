@@ -13,9 +13,12 @@ import { Message } from 'element-ui'
 // }
 
 let baseURL = process.env.VUE_APP_API_ROOT
-if (process.env.VUE_APP_API_MOCK == 'ON') {
+if (process.env.VUE_APP_API_PROXY) {
+    baseURL = '/proxy' + baseURL
+} else if (process.env.VUE_APP_API_MOCK == 'ON') {
     baseURL += process.env.VUE_APP_API_MOCK_PREFIX
 }
+console.log(baseURL)
 
 const api = axios.create({
     baseURL: baseURL,

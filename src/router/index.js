@@ -13,17 +13,7 @@ const constantRoutes = [
     {
         path: '/',
         component: Layout,
-        redirect: '/dashboard',
-        children: [
-            {
-                path: 'dashboard',
-                name: 'dashboard',
-                component: () => import('@/views/index'),
-                meta: {
-                    title: store.state.settings.dashboardTitle
-                }
-            }
-        ]
+        redirect: '/solar_wind',
     }
 ]
 
@@ -36,45 +26,43 @@ let asyncRoutes = [
         },
         children: [
             {
-                path: '/task_supervision',
+                path: '/solar_wind',
                 component: Layout,
-                redirect: '/task_supervision/index',
-                name: 'taskSupervision',
+                name: 'solarWind',
                 meta: {
-                    title: '任务监督',
+                    title: '太阳风数据',
                     icon: 'fenfa'
                 },
                 children: [
                     {
-                        path: 'index',
-                        name: 'taskSupervisionIndex',
-                        component: () => import(/* webpackChunkName: 'supervision' */ '@/views/supervision'),
+                        path: '',
+                        name: 'solarWindIndex',
+                        component: () => import(/* webpackChunkName: 'solar_wind' */ '@/views/solar_wind'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_supervision'
+                            activeMenu: '/solar_wind'
                         }
                     }
                 ]
             },
             {
-                path: '/task_distribution',
+                path: '/model_forecast',
                 component: Layout,
-                redirect: '/task_distribution/index',
-                name: 'taskDistribution',
+                name: 'modelForecast',
                 meta: {
-                    title: '分发任务管理',
-                    icon: 'renwujianguan'
+                    title: '模式预报数据产品',
+                    icon: 'square'
                 },
                 children: [
                     {
-                        path: 'index',
-                        name: 'taskDistributionIndex',
-                        component: () => import(/* webpackChunkName: 'distribution' */ '@/views/distribution'),
+                        path: '',
+                        name: 'modelForecastIndex',
+                        component: () => import(/* webpackChunkName: 'model_forecast' */ '@/views/model_forecast'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution'
+                            activeMenu: '/model_forecast'
                         }
                     }
                 ]
@@ -85,8 +73,8 @@ let asyncRoutes = [
                 redirect: '/task_distribution_list/index',
                 name: 'taskDistributionList',
                 meta: {
-                    title: '分发清单管理',
-                    icon: 'renwuqingdan'
+                    title: '磁层电离层数据产品',
+                    icon: 'waves'
                 },
                 children: [
                     {

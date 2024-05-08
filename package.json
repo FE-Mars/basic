@@ -7,7 +7,6 @@
         "build:test": "vue-cli-service build --mode test --dest dist-test",
         "build": "vue-cli-service build",
         "lint": "vue-cli-service lint",
-        "stylelint": "vue-cli-service lint:style",
         "svgo": "svgo -f src/assets/icons"
     },
     "dependencies": {
@@ -31,7 +30,6 @@
         "@vue/cli-plugin-babel": "~4.5.8",
         "@vue/cli-plugin-eslint": "~4.5.8",
         "@vue/cli-service": "~4.5.8",
-        "@winner-fed/vue-cli-plugin-stylelint": "^1.0.4",
         "babel-eslint": "^10.1.0",
         "babel-plugin-dynamic-import-node": "^2.3.3",
         "babel-plugin-import": "^1.13.8",
@@ -44,10 +42,6 @@
         "sass": "^1.28.0",
         "sass-loader": "^10.0.4",
         "sass-resources-loader": "^2.1.1",
-        "stylelint": "^13.7.2",
-        "stylelint-config-recommended-scss": "^4.2.0",
-        "stylelint-config-standard": "^22.0.0",
-        "stylelint-scss": "^3.18.0",
         "svg-sprite-loader": "^6.0.6",
         "svgo": "^2.3.0",
         "vue-cli-plugin-mock": "^1.0.2",
