@@ -68,23 +68,22 @@ let asyncRoutes = [
                 ]
             },
             {
-                path: '/task_distribution_list',
+                path: '/magnetospheric_ionospheric',
                 component: Layout,
-                redirect: '/task_distribution_list/index',
-                name: 'taskDistributionList',
+                name: 'magnetosphericIonospheric',
                 meta: {
                     title: '磁层电离层数据产品',
                     icon: 'waves'
                 },
                 children: [
                     {
-                        path: 'index',
-                        name: 'taskDistributionListIndex',
-                        component: () => import(/* webpackChunkName: 'distribution_list' */ '@/views/distribution_list'),
+                        path: '',
+                        name: 'magnetosphericIonosphericIndex',
+                        component: () => import(/* webpackChunkName: 'magnetospheric_ionospheric' */ '@/views/magnetospheric_ionospheric'),
                         meta: {
                             sidebar: false,
                             breadcrumb: false,
-                            activeMenu: '/task_distribution_list'
+                            activeMenu: '/magnetospheric_ionospheric'
                         }
                     }
                 ]

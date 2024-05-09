@@ -1,26 +1,14 @@
 <!--
  * @Author: Wang Jun
- * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2024-05-09 19:38:12
+ * @Date: 2024-05-09 10:56:11
+ * @LastEditTime: 2024-05-09 20:00:57
  * @LastEditors: Wang Jun
- * @Description: 模式预报数据产品
+ * @Description: 磁层电离层数据产品
 -->
 <template>
-    <div class="page-model-forecast">
+    <div class="page-magnetospheric-ionospheric">
         <page-header title="">
             <el-form slot="content" :inline="true" :model="filters">
-                <el-form-item label="数据类型">
-                    <el-select v-model="filters.type" clearable placeholder="请选择数据类型">
-                        <el-option value="PM" label="磁顶层" />
-                        <el-option value="EAR" label="极尖区" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="可视化维度">
-                    <el-select v-model="filters.second_type">
-                        <el-option value="3D" label="3D" />
-                        <el-option value="2D" label="2D" />
-                    </el-select>
-                </el-form-item>
                 <el-form-item label="数据时间">
                     <el-date-picker
                         v-model="filters.times"
@@ -40,26 +28,25 @@
             </el-form>
         </page-header>
         <page-main>
-            <div v-if="list.length" class="image-group">
-                <div class="gif-wrap">
-                    <h2 class="title">动图效果</h2>
-                    <el-image v-for="(item, index) in list" :key="'gif_' + item.id" :src="item.url" :class="{'active': index === imageIndex}" fit="contain" />
-                </div>
-                <el-divider direction="vertical" />
-                <div class="image-list-wrap">
-                    <h2 class="title">静态效果</h2>
-                    <div class="image-list">
-                        <el-image v-for="item in list" :key="item.id" :src="item.url" fit="contain" :preview-src-list="urls" />
+            <template v-if="data">
+                <div class="image-group-wrap">
+                    <div v-for="group in groups" :key="group.type" class="image-group">
+                        <h2 class="title">{{ `${group.name}（${group.type}）` }}</h2>
+                        <div class="images">
+                            <template v-if="data[group.type]">
+                                <MultiImageSwitch :images="data[group.type]" trigger="click" />
+                            </template>
+                        </div>
                     </div>
-                    <el-pagination
-                        background
-                        layout="prev, pager, next"
-                        :page-size="limit"
-                        :total="total"
-                        @current-change="onSearch"
-                    />
                 </div>
-            </div>
+                <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :page-size="limit"
+                    :total="total"
+                    @current-change="onSearch"
+                />
+            </template>
             <el-empty v-else description="暂无数据" />
         </page-main>
     </div>
@@ -67,8 +54,10 @@
 <script>
 import dayjs from 'dayjs'
 import api from '@/api/index'
+import MultiImageSwitch from './components/multi_image_switch.vue'
 export default {
     name: "ModelForecast",
+    components: { MultiImageSwitch },
     data() {
         return {
             pickDate: {},
@@ -78,11 +67,20 @@ export default {
                 onPick: this.onPickDate
             },
             page: 1,
-            limit: 9,
+            limit: 64,
             total: 0,
-            list: [],
+            data: null,
             imageIndex: 0,
-            timer: null
+            groups: [
+                { type: 'Rho', name: '密度' },
+                { type: 'Vx', name: '速度' },
+                { type: 'Vy', name: '速度' },
+                { type: 'Vz', name: '速度' },
+                { type: 'Bx', name: '磁场' },
+                { type: 'By', name: '磁场' },
+                { type: 'Bz', name: '磁场' },
+                { type: 'P', name: '压强' },
+            ]
         }
     },
     computed: {
@@ -91,15 +89,12 @@ export default {
         }
     },
     created() {
-        console.log(process.env.NODE_ENV)
         this.onSearch()
     },
 
     methods: {
         getDefaultFilters() {
             return {
-                type: '',
-                second_type: '3D',
                 times: [
                     dayjs().format('YYYY-MM-DD HH:mm:ss'),
                     dayjs().format('YYYY-MM-DD HH:mm:ss')
@@ -137,10 +132,8 @@ export default {
                 background: 'transparent'
             })
             const [ startTime, endTime ] = this.filters.times
-            api.get('/search/pm_img/list', {
+            api.get('/search/ppmlrf_img/list', {
                 params: {
-                    type: this.filters.type || null,
-                    second_type: this.filters.second_type,
                     startTime,
                     endTime,
                     page: this.page,
@@ -148,45 +141,39 @@ export default {
                 }
             }).then(({ data: res }) => {
                 this.total = res.total
-                this.list = res.data.map(item => {
-                    return {
-                        url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,
-                        name: item.PRODUCT_NAME,
-                        id: item.ID,
-                    }
-                })
+                if (res.data.length) {
+                    const result = {}
+                    res.data.forEach(item => {
+                        result[item.TYPE] = result[item.TYPE] || []
+                        result[item.TYPE].push({
+                            url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,   // 开发环境补充代理路径
+                            name: item.PRODUCT_NAME,
+                            id: item.ID,
+                        })
+                    })
+                    this.data = result
+                } else {
+                    this.data = null
+                }
                 this.imageIndex = 0
-                this.switchImage()
             }).finally(() => {
                 loading.close()
             })
-        },
-        switchImage() {
-            this.timer && clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                if (this.imageIndex < this.list.length - 1) {
-                    this.imageIndex++
-                } else {
-                    this.imageIndex = 0
-                }
-                this.switchImage()
-            }, 300)
         }
     }
 }
 </script>
 <style lang="scss" scoped>
-    .page-model-forecast {
-        .image-group {
-            position: relative;
+    .page-magnetospheric-ionospheric {
+        .page-main {
+            padding: 0;
+            background-color: transparent;
+        }
+        .image-group-wrap {
             display: grid;
-            grid-template-columns: 40% max-content auto;
-            column-gap: 8px;
-            overflow: hidden;
-
-            .el-divider {
-                height: 100%;
-            }
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
             .title {
                 position: relative;
                 display: flex;
@@ -205,27 +192,10 @@ export default {
                 }
 
             }
-        }
-        .gif-wrap {
-            position: relative;
-            aspect-ratio: 1;
-            .el-image {
-                position: absolute;
-                top: 33px;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.1s ease-in-out;
-
-                &.active {
-                    opacity: 1;
-                }
+            .image-group {
+                background-color: #fff;
+                padding: 20px;
             }
-        }
-        .image-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
         }
     }
 </style>
