@@ -1,18 +1,36 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 19:40:40
- * @LastEditTime: 2024-05-09 20:06:13
+ * @LastEditTime: 2024-05-10 12:00:37
  * @LastEditors: Wang Jun
  * @Description: 图片切换组件
 -->
 <template>
-    <div class="multi-image-switch" @click="onClick">
-        <el-image v-for="(item, index) in images" :key="item.id" :src="item.url" :class="{'active': index === currentIndex}" fit="contain" />
+    <div class="multi-image-switch"
+         @click="onHandleClick"
+         @mouseenter="trigger === 'hover' ? onHandleSwitch('hover') : {}"
+         @mouseleave="trigger === 'hover' ? clear() : {}"
+    >
+        <el-image
+            v-for="(item, index) in images"
+            :key="item.id"
+            :src="item.url"
+            :class="{'active': index === currentIndex}"
+            fit="contain"
+        >
+            <div slot="placeholder" class="image-slot">
+                加载中<span class="dot">...</span>
+            </div>
+        </el-image>
+        <el-image-viewer v-if="visible" :url-list="previewImages" :initial-index="currentIndex" :on-close="onCloseImgViewer" />
     </div>
 </template>
 <script>
 export default {
     name: "MultiImageSwitch",
+    components: {
+        'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer')
+    },
     props: {
         images: {   // 需要切换的图片数组
             type: Array,
@@ -24,6 +42,10 @@ export default {
                 return ['click', 'hover', 'auto'].includes(value)
             }
         },
+        enablePreview: {    // 是否开启图片预览  仅在 trigger 为 hover 时生效
+            type: Boolean,
+            default: true
+        },
         disabled: Boolean,   // 是否禁用图片切换
         delay: {  // 间隔时间
             type: Number,
@@ -32,8 +54,14 @@ export default {
     },
     data() {
         return {
+            visible: false,   // 是否显示图片预览
             currentIndex: 0,   // 当前显示的图片索引
             timer: null   // 定时器
+        }
+    },
+    computed: {
+        previewImages() {
+            return this.images.map(item => item.url)
         }
     },
     watch: {
@@ -52,13 +80,31 @@ export default {
         this.clear()
     },
     methods: {
-        onClick() {
+        onHandleClick(event) {
             if (this.trigger === 'click') {
+                this.onHandleClick('click')
+            } else if (this.trigger === 'hover') {
+                this.enablePreview && this.onClickImage(event)
+            }
+        },
+        onHandleSwitch(trigger) {
+            if (this.trigger === trigger) {
                 if (this.timer) {  // 第二次点击取消切换
                     return this.clear()
                 }
                 !this.disabled && this.switch()
             }
+        },
+        onClickImage(event) {
+            if (this.trigger !== 'hover') return
+            console.log('预览')
+            this.visible = true
+            document.body.style.overflow = 'hidden'
+            event.stopPropagation()
+        },
+        onCloseImgViewer() {
+            this.visible = false
+            document.body.style.overflow = 'auto'
         },
         switch() {
             if (this.disabled) return
@@ -77,6 +123,9 @@ export default {
                 clearInterval(this.timer)
                 this.timer = null
             }
+        },
+        onPreventDefault(event) {
+            event.preventDefault()
         }
     }
 }
@@ -92,6 +141,14 @@ export default {
 
             &.active {
                 display: block;
+            }
+            .image-slot {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100%;
+                color: #c0c4cc;
+                background-color: #f5f7fa;
             }
         }
     }

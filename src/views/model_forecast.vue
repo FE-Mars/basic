@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2024-05-09 19:38:12
+ * @LastEditTime: 2024-05-10 11:47:10
  * @LastEditors: Wang Jun
  * @Description: 模式预报数据产品
 -->
@@ -43,7 +43,7 @@
             <div v-if="list.length" class="image-group">
                 <div class="gif-wrap">
                     <h2 class="title">动图效果</h2>
-                    <el-image v-for="(item, index) in list" :key="'gif_' + item.id" :src="item.url" :class="{'active': index === imageIndex}" fit="contain" />
+                    <MultiImageSwitch :images="list" />
                 </div>
                 <el-divider direction="vertical" />
                 <div class="image-list-wrap">
@@ -67,8 +67,10 @@
 <script>
 import dayjs from 'dayjs'
 import api from '@/api/index'
+import MultiImageSwitch from './components/multi_image_switch.vue'
 export default {
     name: "ModelForecast",
+    components: { MultiImageSwitch },
     data() {
         return {
             pickDate: {},
@@ -80,9 +82,7 @@ export default {
             page: 1,
             limit: 9,
             total: 0,
-            list: [],
-            imageIndex: 0,
-            timer: null
+            list: []
         }
     },
     computed: {
@@ -91,7 +91,6 @@ export default {
         }
     },
     created() {
-        console.log(process.env.NODE_ENV)
         this.onSearch()
     },
 
@@ -155,22 +154,9 @@ export default {
                         id: item.ID,
                     }
                 })
-                this.imageIndex = 0
-                this.switchImage()
             }).finally(() => {
                 loading.close()
             })
-        },
-        switchImage() {
-            this.timer && clearTimeout(this.timer)
-            this.timer = setTimeout(() => {
-                if (this.imageIndex < this.list.length - 1) {
-                    this.imageIndex++
-                } else {
-                    this.imageIndex = 0
-                }
-                this.switchImage()
-            }, 300)
         }
     }
 }
@@ -208,16 +194,11 @@ export default {
         }
         .gif-wrap {
             position: relative;
-            aspect-ratio: 1;
-            .el-image {
-                position: absolute;
-                top: 33px;
-                width: 100%;
-                opacity: 0;
-                transition: opacity 0.1s ease-in-out;
-
-                &.active {
-                    opacity: 1;
+            .multi-image-switch {
+                aspect-ratio: 1;
+                height: auto;
+                ::v-deep .el-image {
+                    height: 100%;
                 }
             }
         }

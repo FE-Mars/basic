@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 10:56:11
- * @LastEditTime: 2024-05-09 20:00:57
+ * @LastEditTime: 2024-05-10 11:15:40
  * @LastEditors: Wang Jun
  * @Description: 磁层电离层数据产品
 -->
@@ -34,7 +34,7 @@
                         <h2 class="title">{{ `${group.name}（${group.type}）` }}</h2>
                         <div class="images">
                             <template v-if="data[group.type]">
-                                <MultiImageSwitch :images="data[group.type]" trigger="click" />
+                                <MultiImageSwitch :images="data[group.type]" trigger="hover" />
                             </template>
                         </div>
                     </div>
@@ -195,6 +195,17 @@ export default {
             .image-group {
                 background-color: #fff;
                 padding: 20px;
+
+                .images {
+                    aspect-ratio: 1191/316;
+                    ::v-deep .el-image {
+                        height: 100%;
+                        .el-image__placeholder {
+                            width: 100%;
+                            height: 100%;
+                        }
+                    }
+                }
             }
         }
     }
