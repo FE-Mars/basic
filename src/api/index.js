@@ -46,7 +46,7 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => {
         if (response.data.code != 200) {
-            Message.error(response.data.message)
+            Message.error(response.data.message || response.data.msg || '请求失败')
             return Promise.reject(response.data)
         }
         return Promise.resolve(response.data)

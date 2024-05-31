@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2024-05-10 11:47:10
+ * @LastEditTime: 2024-05-31 18:03:40
  * @LastEditors: Wang Jun
  * @Description: 模式预报数据产品
 -->
@@ -11,7 +11,7 @@
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="数据类型">
                     <el-select v-model="filters.type" clearable placeholder="请选择数据类型">
-                        <el-option value="PM" label="磁顶层" />
+                        <el-option value="PM" label="磁层顶" />
                         <el-option value="EAR" label="极尖区" />
                     </el-select>
                 </el-form-item>
@@ -49,7 +49,10 @@
                 <div class="image-list-wrap">
                     <h2 class="title">静态效果</h2>
                     <div class="image-list">
-                        <el-image v-for="item in list" :key="item.id" :src="item.url" fit="contain" :preview-src-list="urls" />
+                        <div v-for="item in list" :key="item.id" class="image-wrap">
+                            <el-image :src="item.url" fit="contain" :preview-src-list="urls" />
+                            <div class="date">{{ item.date }}</div>
+                        </div>
                     </div>
                     <el-pagination
                         background
@@ -97,10 +100,10 @@ export default {
     methods: {
         getDefaultFilters() {
             return {
-                type: '',
+                type: 'PM',
                 second_type: '3D',
                 times: [
-                    dayjs().format('YYYY-MM-DD HH:mm:ss'),
+                    dayjs().subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
                     dayjs().format('YYYY-MM-DD HH:mm:ss')
                 ]
             }
@@ -152,6 +155,7 @@ export default {
                         url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,
                         name: item.PRODUCT_NAME,
                         id: item.ID,
+                        date: item.PRODUCT_TIME
                     }
                 })
             }).finally(() => {
@@ -207,6 +211,9 @@ export default {
             grid-template-columns: repeat(3, 1fr);
             gap: 16px;
             margin-bottom: 24px;
+            .date {
+                text-align: center;
+            }
         }
     }
 </style>

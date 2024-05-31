@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 10:44:41
- * @LastEditTime: 2024-05-10 11:57:34
+ * @LastEditTime: 2024-05-31 18:06:15
  * @LastEditors: Wang Jun
  * @Description: 太阳风数据
 -->
@@ -35,7 +35,7 @@
 import dayjs from 'dayjs'
 import * as echarts from 'echarts'
 import api from '@/api/index'
-import JSONData from '@/assets/太阳风暴.json'
+// import JSONData from '@/assets/太阳风暴.json'
 export default {
     name: "Distribution",
     data() {
@@ -44,7 +44,7 @@ export default {
             filters: this.getDefaultFilters(),
             isAutoRefresh: true,
             isChangedTime: false,
-            data: JSONData.data
+            data: null
         }
     },
     mounted() {
@@ -88,7 +88,7 @@ export default {
                     startTime,
                     endTime
                 },
-            }).then(({ data: res }) => {
+            }).then(res => {
                 if (this.isAutoRefresh) {
                     this.timer = setTimeout(() => this.fetchData(), 5 * 60 * 1000)   // 5分钟刷新一次
                 }
@@ -100,8 +100,8 @@ export default {
             })
 
             // TODO 需要删除测试代码
-            !this.myChart && this.initChart()
-            this.setChatOption()
+            // !this.myChart && this.initChart()
+            // this.setChatOption()
         },
         initChart() {
             if (this.myChart) return

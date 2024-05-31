@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 10:56:11
- * @LastEditTime: 2024-05-10 11:15:40
+ * @LastEditTime: 2024-05-31 18:05:50
  * @LastEditors: Wang Jun
  * @Description: 磁层电离层数据产品
 -->
@@ -80,7 +80,8 @@ export default {
                 { type: 'By', name: '磁场' },
                 { type: 'Bz', name: '磁场' },
                 { type: 'P', name: '压强' },
-            ]
+            ],
+            enableDates: []
         }
     },
     computed: {
@@ -89,15 +90,27 @@ export default {
         }
     },
     created() {
-        this.onSearch()
+        this.fetchEnableDates().then(() => {
+            this.onReset()
+        })
     },
 
     methods: {
+        findClosestDate(dates = this.enableDates) {
+            if (!dates || dates.length === 0) return undefined
+            const now = new Date()
+            return dates.reduce((closestDate, currentDate) => {
+                const currentDiff = Math.abs(new Date(currentDate) - now)
+                const closestDiff = Math.abs(new Date(closestDate) - now)
+                return currentDiff < closestDiff ? currentDate : closestDate
+            })
+        },
         getDefaultFilters() {
+            const date = dayjs(this.findClosestDate())
             return {
                 times: [
-                    dayjs().format('YYYY-MM-DD HH:mm:ss'),
-                    dayjs().format('YYYY-MM-DD HH:mm:ss')
+                    date.hour(0).minute(0).second(0).format('YYYY-MM-DD HH:mm:ss'),
+                    date.hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss')
                 ]
             }
         },
@@ -105,6 +118,7 @@ export default {
             this.pickDate = pick
         },
         disabledDate(date) {
+            if (!this.enableDates.includes(dayjs(date).format('YYYY-MM-DD'))) return true   // 日期不在可选范围内
             const { minDate, maxDate } = this.pickDate
             if (minDate && !maxDate) {
                 const diff = Math.abs(dayjs(date).diff(dayjs(minDate), 'day'))   // 时间跨度不能超过7天
@@ -122,6 +136,11 @@ export default {
             this.page = page
             this.$nextTick(() => {
                 this.fetchData()
+            })
+        },
+        fetchEnableDates() {
+            return api.get('search/ppmlrf_img/dates').then(({ data: res }) => {
+                this.enableDates = res.data || []
             })
         },
         fetchData() {
