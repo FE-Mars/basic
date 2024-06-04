@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 19:40:40
- * @LastEditTime: 2024-05-10 12:00:37
+ * @LastEditTime: 2024-06-03 16:17:11
  * @LastEditors: Wang Jun
  * @Description: 图片切换组件
 -->
@@ -49,7 +49,7 @@ export default {
         disabled: Boolean,   // 是否禁用图片切换
         delay: {  // 间隔时间
             type: Number,
-            default: 300
+            default: 1000
         }
     },
     data() {
@@ -65,6 +65,12 @@ export default {
         }
     },
     watch: {
+        images: {
+            immediate: true,
+            handler() {
+                this.currentIndex = 0
+            }
+        },
         disabled: {
             immediate: true,
             handler(value) {
@@ -116,7 +122,7 @@ export default {
             }
             this.timer = setTimeout(() => {
                 this.switch()
-            }, 300)
+            }, this.delay)
         },
         clear() {
             if (this.timer) {

@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2024-05-31 18:03:40
+ * @LastEditTime: 2024-06-03 16:14:54
  * @LastEditors: Wang Jun
  * @Description: 模式预报数据产品
 -->
@@ -83,7 +83,7 @@ export default {
                 onPick: this.onPickDate
             },
             page: 1,
-            limit: 9,
+            limit: 12,
             total: 0,
             list: []
         }
@@ -125,7 +125,7 @@ export default {
                 this.fetchData()
             })
         },
-        onSearch(page) {
+        onSearch(page = 1) {
             this.page = page
             this.$nextTick(() => {
                 this.fetchData()

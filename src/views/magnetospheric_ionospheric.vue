@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 10:56:11
- * @LastEditTime: 2024-05-31 18:05:50
+ * @LastEditTime: 2024-06-03 16:13:59
  * @LastEditors: Wang Jun
  * @Description: 磁层电离层数据产品
 -->
@@ -12,11 +12,10 @@
                 <el-form-item label="数据时间">
                     <el-date-picker
                         v-model="filters.times"
-                        type="datetimerange"
+                        type="daterange"
                         start-placeholder="开始日期"
                         end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd HH:mm:ss"
-                        :default-time="['00:00:00', '23:59:59']"
+                        value-format="yyyy-MM-dd"
                         :picker-options="pickerOptions"
                         @changed="isChangedTime = true"
                     />
@@ -122,7 +121,7 @@ export default {
             const { minDate, maxDate } = this.pickDate
             if (minDate && !maxDate) {
                 const diff = Math.abs(dayjs(date).diff(dayjs(minDate), 'day'))   // 时间跨度不能超过7天
-                return diff > 7
+                return diff >= 7
             }
             return false
         },
