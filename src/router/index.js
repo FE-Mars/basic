@@ -87,6 +87,27 @@ let asyncRoutes = [
                         }
                     }
                 ]
+            },
+            {
+                path: '/advanced_data',
+                component: Layout,
+                name: 'advancedData',
+                meta: {
+                    title: '高级数据',
+                    icon: 'waveform'
+                },
+                children: [
+                    {
+                        path: '',
+                        name: 'advancedDataIndex',
+                        component: () => import(/* webpackChunkName: 'advanced_data' */ '@/views/advanced_data'),
+                        meta: {
+                            sidebar: false,
+                            breadcrumb: false,
+                            activeMenu: '/advanced_data'
+                        }
+                    }
+                ]
             }
         ]
     }
