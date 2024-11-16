@@ -103,7 +103,7 @@ let asyncRoutes = [
             },
             {
                 path: '/smile_home',
-                component: Layout,
+                component: null,
                 redirect: '/smile_home/index',
                 name: 'smileHome',
                 meta: {
@@ -128,6 +128,13 @@ let asyncRoutes = [
 ]
 
 const lastRoute = [{
+    path: '/home',
+    component: () => import(/* webpackChunkName: 'home' */ '@/views/smile_home'),
+    meta: {
+        sidebar: false,
+        title: 'SMILE卫星首页'
+    }
+}, {
     path: '*',
     component: () => import('@/views/404'),
     meta: {
