@@ -1,26 +1,34 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-16 09:59:21
- * @LastEditTime: 2024-11-16 15:31:26
+ * @LastEditTime: 2024-11-23 10:45:57
  * @LastEditors: Wang Jun
  * @Description: SMILE首页
 -->
 <template>
     <div class="smile-home">
-        <div class="smile-home-content">
-            <div v-for="system in systems" :key="system.key" :class="`system ${system.position}`">
-                <div class="title">{{ system.title }}</div>
-                <div class="children">
-                    <el-card v-for="(item) in system.children" :key="item.label" shadow="hover" :style="item.style" @click.native="onClick(item)">
-                        <img :src="require(`@/assets/images/${item.icon}`)" alt="">
-                        <div class="labels">
-                            <div class="label">{{ item.label }}</div>
-                            <div v-if="item.subLabel" class="sub-label">{{ item.subLabel }}</div>
-                        </div>
-                    </el-card>
+        <div class="header">
+            <img src="@/assets/images/logo2.png" alt="">
+            <h1>SMILE卫星科学应用系统科学数据处理分系统</h1>
+            <span>V1.0</span>
+        </div>
+        <div class="content">
+            <div class="smile-home-content">
+                <div v-for="system in systems" :key="system.key" :class="`system ${system.position}`">
+                    <div class="title">{{ system.title }}</div>
+                    <div class="children">
+                        <el-card v-for="(item) in system.children" :key="item.label" shadow="hover" :style="item.style" @click.native="onClick(item)">
+                            <img :src="require(`@/assets/images/${item.icon}`)" alt="">
+                            <div class="labels">
+                                <div class="label">{{ item.label }}</div>
+                                <div v-if="item.subLabel" class="sub-label">{{ item.subLabel }}</div>
+                            </div>
+                        </el-card>
+                    </div>
                 </div>
             </div>
         </div>
+        <Copyright v-if="$store.state.settings.showCopyright" />
     </div>
 </template>
 <script>
@@ -95,14 +103,37 @@ export default {
 <style lang="scss">
 .smile-home {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 115px 40px 40px;
+    flex-direction: column;
+    height: 100%;
+    .header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 0 24px;
+        background-color: #222b45;
+        color: #fff;
+        font-size: 24px;
+        img {
+            width: 50px;
+            height: 50px;
+        }
+        h1 {
+            flex: 1;
+            font-size: 24px;
+        }
+    }
+    .content {
+        display: flex;
+        justify-content: center;
+        flex: 1;
+    }
     .smile-home-content {
-        display: grid;
+        align-self: flex-start;
+        display: inline-grid;
         grid-template-columns: repeat(2, auto);
         grid-gap: 80px;
-        margin: 0 auto;
+        padding-top: 80px;
     }
     .title {
         font-size: 32px;
