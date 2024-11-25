@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-05 14:41:51
- * @LastEditTime: 2024-11-05 14:41:51
+ * @LastEditTime: 2024-11-25 10:31:11
  * @LastEditors: Wang Jun
  * @Description: 高级数据
 -->
@@ -138,7 +138,7 @@ export default {
             })
         },
         fetchEnableDates() {
-            return api.get('search/ppmlrf_img/dates').then(({ data: res }) => {
+            return api.get('search/avd_img/dates').then(({ data: res }) => {
                 this.enableDates = res.data || []
             })
         },
@@ -150,7 +150,7 @@ export default {
                 background: 'transparent'
             })
             const [ startTime, endTime ] = this.filters.times
-            api.get('/search/ppmlrf_img/list', {
+            api.get('/search/avd_img/list', {
                 params: {
                     startTime,
                     endTime,
