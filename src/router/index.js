@@ -101,28 +101,6 @@ let asyncRoutes = [
                     }
                 ]
             },
-            {
-                path: '/smile_home',
-                component: null,
-                redirect: '/smile_home/index',
-                name: 'smileHome',
-                meta: {
-                    title: 'SMILE卫星首页',
-                    icon: 'dashboard'
-                },
-                children: [
-                    {
-                        path: 'index',
-                        name: 'smileHome',
-                        component: () => import(/* webpackChunkName: 'smile_home' */ '@/views/smile_home'),
-                        meta: {
-                            sidebar: false,
-                            breadcrumb: false,
-                            activeMenu: '/smile_home'
-                        }
-                    }
-                ]
-            }
         ]
     }
 ]

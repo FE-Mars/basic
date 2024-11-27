@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-16 09:59:21
- * @LastEditTime: 2024-11-23 10:45:57
+ * @LastEditTime: 2024-11-27 10:27:43
  * @LastEditors: Wang Jun
  * @Description: SMILE首页
 -->
@@ -45,12 +45,12 @@ export default {
                         {
                             icon: 'v2_sk1xpi.png',
                             label: '数据分发',
-                            path: ''
+                            path: window.location.origin + '#/dashboard'
                         },
                         {
                             icon: 'v2_sk1xv8.png',
                             label: '数据存储',
-                            path: ''
+                            path: 'http://10.73.10.10:8086/#/dashboard'
                         },
                     ]
                 },
@@ -133,7 +133,7 @@ export default {
         display: inline-grid;
         grid-template-columns: repeat(2, auto);
         grid-gap: 80px;
-        padding-top: 80px;
+        padding-top: 120px;
     }
     .title {
         font-size: 32px;
@@ -160,7 +160,7 @@ export default {
             align-items: center;
             .el-card {
                 width: 240px;
-                padding: 18px 32px;
+                padding: 24px 32px;
                 background-color: var(--bg-color, #fff);
                 color: var(--text-color, #333);
                 cursor: pointer;
@@ -171,7 +171,7 @@ export default {
                     padding: 0;
                     gap: 24px;
                     .label {
-                        font-size: 32px;
+                        font-size: 42px;
                     }
                 }
                 &:hover {
