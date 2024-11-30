@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-05 14:41:51
- * @LastEditTime: 2024-11-25 10:31:11
+ * @LastEditTime: 2024-11-30 16:43:38
  * @LastEditors: Wang Jun
  * @Description: 高级数据
 -->
@@ -28,15 +28,18 @@
         </page-header>
         <page-main>
             <template v-if="data">
-                <div class="image-group-wrap">
-                    <div v-for="group in groups" :key="group.type" class="image-group">
-                        <h2 class="title">{{ `${group.name}（${group.type}）` }}</h2>
-                        <div class="images">
-                            <template v-if="data[group.type]">
-                                <MultiImageSwitch :images="data[group.type]" trigger="hover" />
-                            </template>
+                <div class="image-list-wrap">
+                    <el-image
+                        v-for="(item) in data"
+                        :key="item.id"
+                        :src="item.url"
+                        fit="contain"
+                        :preview-src-list="previewSrcList"
+                    >
+                        <div slot="placeholder" class="image-slot">
+                            加载中<span class="dot">...</span>
                         </div>
-                    </div>
+                    </el-image>
                 </div>
                 <el-pagination
                     background
@@ -53,10 +56,9 @@
 <script>
 import dayjs from 'dayjs'
 import api from '@/api/index'
-import MultiImageSwitch from './components/multi_image_switch.vue'
 export default {
     name: "ModelForecast",
-    components: { MultiImageSwitch },
+    components: { },
     data() {
         return {
             pickDate: {},
@@ -66,26 +68,16 @@ export default {
                 onPick: this.onPickDate
             },
             page: 1,
-            limit: 64,
+            limit: 12,
             total: 0,
             data: null,
             imageIndex: 0,
-            groups: [
-                { type: 'Rho', name: '密度' },
-                { type: 'Vx', name: '速度' },
-                { type: 'Vy', name: '速度' },
-                { type: 'Vz', name: '速度' },
-                { type: 'Bx', name: '磁场' },
-                { type: 'By', name: '磁场' },
-                { type: 'Bz', name: '磁场' },
-                { type: 'P', name: '压强' },
-            ],
             enableDates: []
         }
     },
     computed: {
-        urls() {
-            return this.list.map(item => item.url)
+        previewSrcList() {
+            return this.data.map(item => item.url)
         }
     },
     created() {
@@ -160,10 +152,9 @@ export default {
             }).then(({ data: res }) => {
                 this.total = res.total
                 if (res.data.length) {
-                    const result = {}
+                    const result = []
                     res.data.forEach(item => {
-                        result[item.TYPE] = result[item.TYPE] || []
-                        result[item.TYPE].push({
+                        result.push({
                             url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,   // 开发环境补充代理路径
                             name: item.PRODUCT_NAME,
                             id: item.ID,
@@ -187,9 +178,9 @@ export default {
             padding: 0;
             background-color: transparent;
         }
-        .image-group-wrap {
+        .image-list-wrap {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 16px;
             margin-bottom: 24px;
             .title {
@@ -210,18 +201,12 @@ export default {
                 }
 
             }
-            .image-group {
-                background-color: #fff;
-                padding: 20px;
-
-                .images {
-                    aspect-ratio: 1191/316;
-                    ::v-deep .el-image {
+            .images {
+                ::v-deep .el-image {
+                    height: 100%;
+                    .el-image__placeholder {
+                        width: 100%;
                         height: 100%;
-                        .el-image__placeholder {
-                            width: 100%;
-                            height: 100%;
-                        }
                     }
                 }
             }

@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 10:56:11
- * @LastEditTime: 2024-06-03 16:13:59
+ * @LastEditTime: 2024-11-30 16:15:58
  * @LastEditors: Wang Jun
  * @Description: 磁层电离层数据产品
 -->
@@ -81,11 +81,6 @@ export default {
                 { type: 'P', name: '压强' },
             ],
             enableDates: []
-        }
-    },
-    computed: {
-        urls() {
-            return this.list.map(item => item.url)
         }
     },
     created() {
