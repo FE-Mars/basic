@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-05 14:41:51
- * @LastEditTime: 2024-11-30 16:43:38
+ * @LastEditTime: 2024-12-02 14:57:01
  * @LastEditors: Wang Jun
  * @Description: 高级数据
 -->
@@ -180,7 +180,7 @@ export default {
         }
         .image-list-wrap {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(6, 1fr);
             gap: 16px;
             margin-bottom: 24px;
             .title {
@@ -204,6 +204,7 @@ export default {
             .images {
                 ::v-deep .el-image {
                     height: 100%;
+                    max-height: 910px;
                     .el-image__placeholder {
                         width: 100%;
                         height: 100%;
