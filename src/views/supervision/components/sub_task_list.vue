@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2023-08-06 00:47:15
- * @LastEditTime: 2023-09-19 10:06:06
+ * @LastEditTime: 2024-12-04 14:10:23
  * @LastEditors: Wang Jun
  * @Description: 子任务列表
 -->
@@ -87,7 +87,7 @@ export default {
         getSubTaskList() {
             if (this.is_fetched) return
             this.loading = true
-            api.get(`/supervisionTask/task/${this.mainTaskCode}`).then(data => {
+            api.get(`/supervisionTask/task/${this.mainTaskCode}?status=${this.status || 0}`).then(data => {
                 this.list = data.res
                 this.is_fetched = true
                 this.loading = false
