@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 10:44:41
- * @LastEditTime: 2024-05-31 18:06:15
+ * @LastEditTime: 2025-04-18 15:06:14
  * @LastEditors: Wang Jun
  * @Description: 太阳风数据
 -->
@@ -63,7 +63,7 @@ export default {
         getDefaultFilters() {
             return {
                 times: [
-                    dayjs().startOf('date').format('YYYY-MM-DD HH:mm:ss'),
+                    dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
                     dayjs().format('YYYY-MM-DD HH:mm:ss')
                 ]
             }

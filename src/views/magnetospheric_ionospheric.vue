@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 10:56:11
- * @LastEditTime: 2024-11-30 16:15:58
+ * @LastEditTime: 2025-04-18 16:39:58
  * @LastEditors: Wang Jun
  * @Description: 磁层电离层数据产品
 -->
@@ -33,7 +33,7 @@
                         <h2 class="title">{{ `${group.name}（${group.type}）` }}</h2>
                         <div class="images">
                             <template v-if="data[group.type]">
-                                <MultiImageSwitch :images="data[group.type]" trigger="hover" />
+                                <MultiImageSwitch :images="data[group.type]" />
                             </template>
                         </div>
                     </div>

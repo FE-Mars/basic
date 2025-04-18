@@ -1,50 +1,33 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-09 19:40:40
- * @LastEditTime: 2024-06-03 16:17:11
+ * @LastEditTime: 2025-04-18 16:55:53
  * @LastEditors: Wang Jun
  * @Description: 图片切换组件
 -->
 <template>
-    <div class="multi-image-switch"
-         @click="onHandleClick"
-         @mouseenter="trigger === 'hover' ? onHandleSwitch('hover') : {}"
-         @mouseleave="trigger === 'hover' ? clear() : {}"
-    >
+    <div class="multi-image-switch" @click="onClickImage">
         <el-image
-            v-for="(item, index) in images"
-            :key="item.id"
-            :src="item.url"
-            :class="{'active': index === currentIndex}"
+            :src="images[images.length - 1].url"
             fit="contain"
         >
             <div slot="placeholder" class="image-slot">
                 加载中<span class="dot">...</span>
             </div>
         </el-image>
-        <el-image-viewer v-if="visible" :url-list="previewImages" :initial-index="currentIndex" :on-close="onCloseImgViewer" />
+        <image-viewer v-if="visible" :url-list="previewImages" auto-play :interval="delay" :initial-index="currentIndex" :on-close="onCloseImgViewer" />
     </div>
 </template>
 <script>
 export default {
     name: "MultiImageSwitch",
     components: {
-        'el-image-viewer': () => import('element-ui/packages/image/src/image-viewer')
+        'image-viewer': () => import('./image-viewer')
     },
     props: {
         images: {   // 需要切换的图片数组
             type: Array,
             default: () => []
-        },
-        trigger: {  // 触发切换的事件
-            default: 'auto',
-            validator(value) {
-                return ['click', 'hover', 'auto'].includes(value)
-            }
-        },
-        enablePreview: {    // 是否开启图片预览  仅在 trigger 为 hover 时生效
-            type: Boolean,
-            default: true
         },
         disabled: Boolean,   // 是否禁用图片切换
         delay: {  // 间隔时间
@@ -71,38 +54,12 @@ export default {
                 this.currentIndex = 0
             }
         },
-        disabled: {
-            immediate: true,
-            handler(value) {
-                if (value) {
-                    this.clear()
-                } else if (this.trigger === 'auto') {
-                    this.switch()
-                }
-            }
-        }
     },
     unmounted() {
         this.clear()
     },
     methods: {
-        onHandleClick(event) {
-            if (this.trigger === 'click') {
-                this.onHandleClick('click')
-            } else if (this.trigger === 'hover') {
-                this.enablePreview && this.onClickImage(event)
-            }
-        },
-        onHandleSwitch(trigger) {
-            if (this.trigger === trigger) {
-                if (this.timer) {  // 第二次点击取消切换
-                    return this.clear()
-                }
-                !this.disabled && this.switch()
-            }
-        },
         onClickImage(event) {
-            if (this.trigger !== 'hover') return
             console.log('预览')
             this.visible = true
             document.body.style.overflow = 'hidden'
@@ -111,24 +68,6 @@ export default {
         onCloseImgViewer() {
             this.visible = false
             document.body.style.overflow = 'auto'
-        },
-        switch() {
-            if (this.disabled) return
-            this.clear()
-            if (this.currentIndex < this.images.length - 1) {
-                this.currentIndex++
-            } else {
-                this.currentIndex = 0
-            }
-            this.timer = setTimeout(() => {
-                this.switch()
-            }, this.delay)
-        },
-        clear() {
-            if (this.timer) {
-                clearInterval(this.timer)
-                this.timer = null
-            }
         },
         onPreventDefault(event) {
             event.preventDefault()
@@ -143,11 +82,6 @@ export default {
         width: 100%;
         .el-image {
             width: 100%;
-            display: none;
-
-            &.active {
-                display: block;
-            }
             .image-slot {
                 display: flex;
                 align-items: center;
