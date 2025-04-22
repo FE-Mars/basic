@@ -48,7 +48,6 @@
                         @load="handleImgLoad"
                         @error="handleImgError"
                         @mousedown="handleMouseDown"
-                        @dblclick="toggleAutoPlay"
                     >
                 </template>
             </div>
@@ -186,6 +185,9 @@ export default {
         // add tabindex then wrapper can be focusable via Javascript
         // focus wrapper so arrow key can't cause inner scroll behavior underneath
         this.$refs['el-image-viewer__wrapper'].focus()
+
+        // 自动开始播放
+        this.startAutoPlay()
     },
     destroyed() {
         // if appendToBody is true, remove DOM node after destroy
