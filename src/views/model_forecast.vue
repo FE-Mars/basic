@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2024-06-03 16:14:54
+ * @LastEditTime: 2025-04-23 18:06:58
  * @LastEditors: Wang Jun
  * @Description: 模式预报数据产品
 -->
@@ -9,7 +9,7 @@
     <div class="page-model-forecast">
         <page-header title="">
             <el-form slot="content" :inline="true" :model="filters">
-                <el-form-item label="数据类型">
+                <!-- <el-form-item label="数据类型">
                     <el-select v-model="filters.type" clearable placeholder="请选择数据类型">
                         <el-option value="PM" label="磁层顶" />
                         <el-option value="EAR" label="极尖区" />
@@ -20,7 +20,7 @@
                         <el-option value="3D" label="3D" />
                         <el-option value="2D" label="2D" />
                     </el-select>
-                </el-form-item>
+                </el-form-item> -->
                 <el-form-item label="数据时间">
                     <el-date-picker
                         v-model="filters.times"
@@ -40,29 +40,24 @@
             </el-form>
         </page-header>
         <page-main>
-            <div v-if="list.length" class="image-group">
-                <div class="gif-wrap">
-                    <h2 class="title">动图效果</h2>
-                    <MultiImageSwitch :images="list" />
-                </div>
-                <el-divider direction="vertical" />
-                <div class="image-list-wrap">
-                    <h2 class="title">静态效果</h2>
-                    <div class="image-list">
-                        <div v-for="item in list" :key="item.id" class="image-wrap">
-                            <el-image :src="item.url" fit="contain" :preview-src-list="urls" />
-                            <div class="date">{{ item.date }}</div>
+            <template v-if="groups.length">
+                <div class="image-group-wrap">
+                    <div v-for="group in groups" :key="group.type" class="image-group">
+                        <h2 class="title">{{ `${group.name}` }}</h2>
+                        <div class="images">
+                            <MultiImageSwitch :images="group['3D']" />
+                            <MultiImageSwitch :images="group['2D']" />
                         </div>
                     </div>
-                    <el-pagination
-                        background
-                        layout="prev, pager, next"
-                        :page-size="limit"
-                        :total="total"
-                        @current-change="onSearch"
-                    />
                 </div>
-            </div>
+                <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :page-size="limit"
+                    :total="total"
+                    @current-change="onSearch"
+                />
+            </template>
             <el-empty v-else description="暂无数据" />
         </page-main>
     </div>
@@ -83,9 +78,18 @@ export default {
                 onPick: this.onPickDate
             },
             page: 1,
-            limit: 12,
+            limit: 24,
             total: 0,
-            list: []
+            list: [],
+            types: {
+                PM: '磁层顶',
+                EAR: '极尖区'
+            },
+            secondTypes: {
+                '3D': '3D',
+                '2D': '2D'
+            },
+            groups: []
         }
     },
     computed: {
@@ -100,10 +104,10 @@ export default {
     methods: {
         getDefaultFilters() {
             return {
-                type: 'PM',
-                second_type: '3D',
+                // type: 'PM',
+                // second_type: '3D',
                 times: [
-                    dayjs().subtract(1, 'hour').format('YYYY-MM-DD HH:mm:ss'),
+                    dayjs().subtract(1, 'day').format('YYYY-MM-DD HH:mm:ss'),
                     dayjs().format('YYYY-MM-DD HH:mm:ss')
                 ]
             }
@@ -150,14 +154,28 @@ export default {
                 }
             }).then(({ data: res }) => {
                 this.total = res.total
-                this.list = res.data.map(item => {
-                    return {
+                const result = []
+                res.data.forEach(item => {
+                    let group_index = result.findIndex(group => group.type === item.TYPE)
+                    if (group_index === -1) {
+                        result.push({
+                            type: item.TYPE,
+                            name: this.types[item.TYPE],
+                            '3D': [],
+                            '2D': []
+                        })
+                        group_index = result.length - 1
+                    }
+                    const group = result[group_index]
+                    console.log('[ 图片 ] >', `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,)
+                    group[item.SECOND_TYPE].push({
                         url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,
                         name: item.PRODUCT_NAME,
                         id: item.ID,
                         date: item.PRODUCT_TIME
-                    }
+                    })
                 })
+                this.groups = result
             }).finally(() => {
                 loading.close()
             })
@@ -167,16 +185,15 @@ export default {
 </script>
 <style lang="scss" scoped>
     .page-model-forecast {
+        .image-group-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
         .image-group {
-            position: relative;
-            display: grid;
-            grid-template-columns: 40% max-content auto;
-            column-gap: 8px;
-            overflow: hidden;
-
-            .el-divider {
-                height: 100%;
-            }
+            display: flex;
+            flex-direction: column;
             .title {
                 position: relative;
                 display: flex;
@@ -193,26 +210,20 @@ export default {
                     background-color: #409EFF;
                     border-radius: 3px;
                 }
-
             }
-        }
-        .gif-wrap {
-            position: relative;
-            .multi-image-switch {
-                aspect-ratio: 1;
-                height: auto;
+            .images {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+                min-height: 60px;
                 ::v-deep .el-image {
                     height: 100%;
+                    max-height: 300px;
+                    .el-image__placeholder {
+                        width: 100%;
+                        height: 100%;
+                    }
                 }
-            }
-        }
-        .image-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 24px;
-            .date {
-                text-align: center;
             }
         }
     }

@@ -50,6 +50,10 @@
                         @mousedown="handleMouseDown"
                     >
                 </template>
+                <!-- 添加预加载图片 -->
+                <div style="display: none;">
+                    <img v-for="(url, i) in preloadUrls" :key="`preload-${i}`" :src="url">
+                </div>
             </div>
         </div>
     </transition>
@@ -127,7 +131,8 @@ export default {
             },
             autoPlayTimer: null,
             isAutoPlaying: false,
-            autoTriggered: false
+            autoTriggered: false,
+            preloadUrls: [] // 用于预加载的URL列表
         }
     },
     computed: {
@@ -147,9 +152,10 @@ export default {
             const { scale, deg, offsetX, offsetY, enableTransition } = this.transform
             const style = {
                 transform: `scale(${scale}) rotate(${deg}deg)`,
-                transition: enableTransition ? 'transform .3s' : '',
                 'margin-left': `${offsetX}px`,
-                'margin-top': `${offsetY}px`
+                'margin-top': `${offsetY}px`,
+                'opacity': this.loading ? 0 : 1, // 添加透明度过渡
+                'transition': enableTransition ? 'transform .3s, opacity 0.3s' : 'opacity 0.3s' // 合并transition属性
             }
             if (this.mode === Mode.CONTAIN) {
                 style.maxWidth = style.maxHeight = '100%'
@@ -166,6 +172,7 @@ export default {
             handler: function(val) {
                 this.reset()
                 this.onSwitch(val)
+                this.preloadNextImages() // 预加载下一张图片
             }
         },
         currentImg() {
@@ -175,6 +182,12 @@ export default {
                     this.loading = true
                 }
             })
+        },
+        urlList: {
+            handler: function() {
+                this.preloadNextImages() // URL列表变化时预加载
+            },
+            immediate: true
         }
     },
     mounted() {
@@ -185,6 +198,9 @@ export default {
         // add tabindex then wrapper can be focusable via Javascript
         // focus wrapper so arrow key can't cause inner scroll behavior underneath
         this.$refs['el-image-viewer__wrapper'].focus()
+
+        // 预加载图片
+        this.preloadNextImages()
 
         // 自动开始播放
         this.startAutoPlay()
@@ -434,6 +450,28 @@ export default {
                 this.autoPlayTimer = null
                 this.isAutoPlaying = false
             }
+        },
+
+        // 预加载下一张和上一张图片
+        preloadNextImages() {
+            if (this.urlList.length <= 1) return
+
+            const preloadUrls = []
+            const len = this.urlList.length
+
+            // 预加载下一张图片
+            const nextIndex = (this.index + 1) % len
+            if (nextIndex !== this.index) {
+                preloadUrls.push(this.urlList[nextIndex])
+            }
+
+            // 预加载上一张图片
+            const prevIndex = (this.index - 1 + len) % len
+            if (prevIndex !== this.index) {
+                preloadUrls.push(this.urlList[prevIndex])
+            }
+
+            this.preloadUrls = preloadUrls
         }
     }
 }
