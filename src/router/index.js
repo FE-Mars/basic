@@ -51,7 +51,7 @@ let asyncRoutes = [
                 component: Layout,
                 name: 'modelForecast',
                 meta: {
-                    title: '模式预报数据产品',
+                    title: '模式预报数据',
                     icon: 'square'
                 },
                 children: [
@@ -72,7 +72,7 @@ let asyncRoutes = [
                 component: Layout,
                 name: 'magnetosphericIonospheric',
                 meta: {
-                    title: '磁层电离层数据产品',
+                    title: '磁层电离层数据',
                     icon: 'waves'
                 },
                 children: [
