@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 10:44:41
- * @LastEditTime: 2025-04-18 15:06:14
+ * @LastEditTime: 2025-05-13 15:20:41
  * @LastEditors: Wang Jun
  * @Description: 太阳风数据
 -->
@@ -146,28 +146,32 @@ export default {
                         realtime: true,
                         start: 0,
                         end: 100,
-                        xAxisIndex: [0, 1]
+                        xAxisIndex: [0, 1],
+                        zoomOnMouseWheel: false
                     },
                     {
                         type: 'inside',
                         realtime: true,
                         start: 0,
                         end: 100,
-                        xAxisIndex: [0, 1]
+                        xAxisIndex: [0, 1],
+                        zoomOnMouseWheel: false
                     },
                     {
                         type: 'inside',
                         realtime: true,
                         start: 0,
                         end: 100,
-                        xAxisIndex: [0, 2]
+                        xAxisIndex: [0, 2],
+                        zoomOnMouseWheel: false
                     },
                     {
                         type: 'inside',
                         realtime: true,
                         start: 0,
                         end: 100,
-                        xAxisIndex: [0, 3]
+                        xAxisIndex: [0, 3],
+                        zoomOnMouseWheel: false
                     }
                 ],
                 title: ['Bx By Bz GSM(nT)', 'Density(1/cm³)', 'Speed(km/s)', 'Temperature(°C)'].map((v, i) => {

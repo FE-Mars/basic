@@ -10,15 +10,19 @@
         <page-header title="">
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="数据时间">
-                    <el-date-picker
+                    <el-select
                         v-model="filters.times"
-                        type="daterange"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd"
-                        :picker-options="pickerOptions"
-                        @changed="isChangedTime = true"
-                    />
+                        filterable
+                        placeholder="请选择日期"
+                        style="width: 200px"
+                    >
+                        <el-option
+                            v-for="item in dateOptions"
+                            :key="item"
+                            :label="item"
+                            :value="item"
+                        />
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSearch(1)">查询</el-button>
@@ -51,7 +55,6 @@
     </div>
 </template>
 <script>
-import dayjs from 'dayjs'
 import api from '@/api/index'
 import MultiImageSwitch from './components/multi_image_switch.vue'
 export default {
@@ -61,10 +64,6 @@ export default {
         return {
             pickDate: {},
             filters: this.getDefaultFilters(),
-            pickerOptions: {
-                disabledDate: this.disabledDate,
-                onPick: this.onPickDate
-            },
             page: 1,
             limit: 64,
             total: 0,
@@ -81,6 +80,11 @@ export default {
                 { type: 'P', name: '压强' },
             ],
             enableDates: []
+        }
+    },
+    computed: {
+        dateOptions() {
+            return this.enableDates
         }
     },
     created() {
@@ -100,25 +104,10 @@ export default {
             })
         },
         getDefaultFilters() {
-            const date = dayjs(this.findClosestDate())
+            const date = this.findClosestDate()
             return {
-                times: [
-                    date.hour(0).minute(0).second(0).format('YYYY-MM-DD HH:mm:ss'),
-                    date.hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss')
-                ]
+                times: date || ''
             }
-        },
-        onPickDate(pick) {
-            this.pickDate = pick
-        },
-        disabledDate(date) {
-            if (!this.enableDates.includes(dayjs(date).format('YYYY-MM-DD'))) return true   // 日期不在可选范围内
-            const { minDate, maxDate } = this.pickDate
-            if (minDate && !maxDate) {
-                const diff = Math.abs(dayjs(date).diff(dayjs(minDate), 'day'))   // 时间跨度不能超过7天
-                return diff >= 7
-            }
-            return false
         },
         onReset() {
             this.filters = this.getDefaultFilters()
@@ -144,7 +133,9 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'transparent'
             })
-            const [ startTime, endTime ] = this.filters.times
+            const date = this.filters.times
+            const startTime = date ? `${date} 00:00:00` : ''
+            const endTime = date ? `${date} 23:59:59` : ''
             api.get('/search/ppmlrf_img/list', {
                 params: {
                     startTime,
