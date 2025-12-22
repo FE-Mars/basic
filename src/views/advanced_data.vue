@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-11-05 14:41:51
- * @LastEditTime: 2024-12-02 14:57:01
+ * @LastEditTime: 2025-12-22 15:12:40
  * @LastEditors: Wang Jun
  * @Description: 高级数据
 -->
@@ -10,15 +10,19 @@
         <page-header title="">
             <el-form slot="content" :inline="true" :model="filters">
                 <el-form-item label="数据时间">
-                    <el-date-picker
+                    <el-select
                         v-model="filters.times"
-                        type="daterange"
-                        start-placeholder="开始日期"
-                        end-placeholder="结束日期"
-                        value-format="yyyy-MM-dd"
-                        :picker-options="pickerOptions"
-                        @changed="isChangedTime = true"
-                    />
+                        filterable
+                        placeholder="请选择日期"
+                        style="width: 200px"
+                    >
+                        <el-option
+                            v-for="item in dateOptions"
+                            :key="item"
+                            :label="item"
+                            :value="item"
+                        />
+                    </el-select>
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" @click="onSearch(1)">查询</el-button>
@@ -28,56 +32,51 @@
         </page-header>
         <page-main>
             <template v-if="data">
-                <div class="image-list-wrap">
-                    <el-image
-                        v-for="(item) in data"
-                        :key="item.id"
-                        :src="item.url"
-                        fit="contain"
-                        :preview-src-list="previewSrcList"
+                <div class="image-group-wrap">
+                    <div
+                        v-for="group in groups"
+                        :key="group.type"
+                        class="image-group"
+                        :class="`group-${group.type}`"
                     >
-                        <div slot="placeholder" class="image-slot">
-                            加载中<span class="dot">...</span>
+                        <div class="images">
+                            <template v-if="data[group.type]">
+                                <MultiImageSwitch :images="data[group.type]" />
+                            </template>
                         </div>
-                    </el-image>
+                    </div>
                 </div>
-                <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :page-size="limit"
-                    :total="total"
-                    @current-change="onSearch"
-                />
             </template>
             <el-empty v-else description="暂无数据" />
         </page-main>
     </div>
 </template>
 <script>
-import dayjs from 'dayjs'
 import api from '@/api/index'
+import MultiImageSwitch from './components/multi_image_switch.vue'
+
 export default {
     name: "ModelForecast",
-    components: { },
+    components: { MultiImageSwitch },
     data() {
         return {
-            pickDate: {},
             filters: this.getDefaultFilters(),
-            pickerOptions: {
-                disabledDate: this.disabledDate,
-                onPick: this.onPickDate
-            },
             page: 1,
-            limit: 12,
+            limit: 63,
             total: 0,
             data: null,
             imageIndex: 0,
-            enableDates: []
+            enableDates: [],
+            groups: [
+                { type: '6MP3d' },
+                { type: '4thtmatch' },
+                { type: '6MP2d' }
+            ]
         }
     },
     computed: {
-        previewSrcList() {
-            return this.data.map(item => item.url)
+        dateOptions() {
+            return this.enableDates
         }
     },
     created() {
@@ -97,25 +96,10 @@ export default {
             })
         },
         getDefaultFilters() {
-            const date = dayjs(this.findClosestDate())
+            const date = this.findClosestDate()
             return {
-                times: [
-                    date.hour(0).minute(0).second(0).format('YYYY-MM-DD HH:mm:ss'),
-                    date.hour(23).minute(59).second(59).format('YYYY-MM-DD HH:mm:ss')
-                ]
+                times: date || ''
             }
-        },
-        onPickDate(pick) {
-            this.pickDate = pick
-        },
-        disabledDate(date) {
-            if (!this.enableDates.includes(dayjs(date).format('YYYY-MM-DD'))) return true   // 日期不在可选范围内
-            const { minDate, maxDate } = this.pickDate
-            if (minDate && !maxDate) {
-                const diff = Math.abs(dayjs(date).diff(dayjs(minDate), 'day'))   // 时间跨度不能超过7天
-                return diff >= 7
-            }
-            return false
         },
         onReset() {
             this.filters = this.getDefaultFilters()
@@ -130,7 +114,7 @@ export default {
             })
         },
         fetchEnableDates() {
-            return api.get('search/avd_img/dates').then(({ data: res }) => {
+            return api.get('/search/avd_img/dates').then(({ data: res }) => {
                 this.enableDates = res.data || []
             })
         },
@@ -141,7 +125,10 @@ export default {
                 spinner: 'el-icon-loading',
                 background: 'transparent'
             })
-            const [ startTime, endTime ] = this.filters.times
+            const date = this.filters.times
+            const startTime = date ? `${date} 00:00:00` : ''
+            const endTime = date ? `${date} 23:59:59` : ''
+
             api.get('/search/avd_img/list', {
                 params: {
                     startTime,
@@ -152,10 +139,16 @@ export default {
             }).then(({ data: res }) => {
                 this.total = res.total
                 if (res.data.length) {
-                    const result = []
+                    const result = {}
                     res.data.forEach(item => {
-                        result.push({
-                            url: `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`,   // 开发环境补充代理路径
+                        const type = item.TYPE || item.type
+                        result[type] = result[type] || []
+                        // 如果 PRODUCT_PATH 是相对路径（以 / 开头），直接使用；否则拼接 BASE_URL
+                        const imageUrl = item.PRODUCT_PATH && item.PRODUCT_PATH.startsWith('/')
+                            ? item.PRODUCT_PATH
+                            : `${process.env.VUE_APP_IMAGE_BASE_URL || ''}${item.PRODUCT_PATH}`
+                        result[type].push({
+                            url: imageUrl,
                             name: item.PRODUCT_NAME,
                             id: item.ID,
                         })
@@ -178,11 +171,34 @@ export default {
             padding: 0;
             background-color: transparent;
         }
-        .image-list-wrap {
+        .image-group-wrap {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(2, auto);
             gap: 16px;
             margin-bottom: 24px;
+            max-width: 1000px;
+
+            .image-group {
+                background-color: #fff;
+                padding: 20px;
+
+                &.group-6MP3d {
+                    grid-column: 1;
+                    grid-row: 1;
+                }
+
+                &.group-4thtmatch {
+                    grid-column: 2;
+                    grid-row: 1;
+                }
+
+                &.group-6MP2d {
+                    grid-column: 1 / span 2;
+                    grid-row: 2;
+                }
+            }
+
             .title {
                 position: relative;
                 display: flex;
@@ -199,12 +215,11 @@ export default {
                     background-color: #409EFF;
                     border-radius: 3px;
                 }
-
             }
+
             .images {
                 ::v-deep .el-image {
                     height: 100%;
-                    max-height: 910px;
                     .el-image__placeholder {
                         width: 100%;
                         height: 100%;

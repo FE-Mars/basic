@@ -1,7 +1,7 @@
 <!--
  * @Author: Wang Jun
  * @Date: 2024-05-08 17:09:23
- * @LastEditTime: 2025-04-23 18:06:58
+ * @LastEditTime: 2025-06-04 18:43:38
  * @LastEditors: Wang Jun
  * @Description: 模式预报数据产品
 -->
@@ -78,7 +78,7 @@ export default {
                 onPick: this.onPickDate
             },
             page: 1,
-            limit: 24,
+            limit: 80,
             total: 0,
             list: [],
             types: {
